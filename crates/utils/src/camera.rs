@@ -7,60 +7,117 @@ use orbtk::prelude::*;
 /// The camera can be moved.
 #[derive(Clone, Default, Debug)]
 pub struct Camera {
-    rect: Cell<Rect>,
-    maximum: Cell<Point>,
-    speed: Cell<f64>,
+    rect: Rect,
+    maximum: Point,
+    speed: f64,
 }
 
 /// Describes the base behavior methods of a camera.
-pub trait CameraExt {
-    fn rect(&self) -> &Cell<Rect>;
+pub trait CameraExt: Size + Position {
+    /// Gets the maximum.
+    fn maximum(&self) -> &Point;
 
-    fn maximum(&self) -> &Cell<Point>;
+    /// Sets the maximum.
+    fn set_maximum(&mut self, x: f64, y: f64);
 
-    fn speed(&self) -> &Cell<f64>;
+    /// Gets the speed.
+    fn speed(&self) -> f64;
 
+    /// Sets the speed.
+    fn set_speed(&mut self, speed: f64);
+
+    /// Moves the camera.
     fn mov(&mut self, delta: f64, dir_x: f64, dir_y: f64);
 }
 
 impl Camera {
     pub fn new(rect: Rect, maximum: Point) -> Self {
         Camera {
-            rect: Cell::new(rect),
-            maximum: Cell::new(maximum),
-            speed: Cell::new(256.0),
+            rect,
+            maximum,
+            speed: 256.0,
         }
     }
 }
 
-impl CameraExt for Camera {
-    fn rect(&self) -> &Cell<Rect> {
-        &self.rect
+impl Size for Camera {
+    fn width(&self) -> f64 {
+        self.rect.width
     }
 
-    fn maximum(&self) -> &Cell<Point> {
+    fn set_width(&mut self, width: f64) {
+        self.rect.width = width;
+    }
+
+    fn height(&self) -> f64 {
+        self.rect.height
+    }
+
+    fn set_height(&mut self, height: f64) {
+        self.rect.height = height;
+    }
+
+    fn size(&self) -> (f64, f64) {
+        (self.rect.width, self.rect.height)
+    }
+
+    fn set_size(&mut self, width: f64, height: f64) {
+        self.rect.width = width;
+        self.rect.height = height;
+    }
+}
+
+impl Position for Camera {
+    fn x(&self) -> f64 {
+        self.rect.x
+    }
+
+    fn set_x(&mut self, x: f64) {
+        self.rect.x = x;
+    }
+
+    fn y(&self) -> f64 {
+        self.rect.y
+    }
+
+    fn set_y(&mut self, y: f64) {
+        self.rect.y = y;
+    }
+
+    fn position(&self) -> (f64, f64) {
+        (self.rect.x, self.rect.y)
+    }
+
+    fn set_position(&mut self, x: f64, y: f64) {
+        self.rect.x = x;
+        self.rect.y = y;
+    }
+}
+
+impl CameraExt for Camera {
+    fn maximum(&self) -> &Point {
         &self.maximum
     }
-
-    fn speed(&self) -> &Cell<f64> {
-        &self.speed
+    fn set_maximum(&mut self, x: f64, y: f64) {
+        self.maximum.x = x;
+        self.maximum.y = y;
+    }
+    fn speed(&self) -> f64 {
+        self.speed
+    }
+    fn set_speed(&mut self, speed: f64) {
+        self.speed = speed;
     }
 
     fn mov(&mut self, delta: f64, dir_x: f64, dir_y: f64) {
-        let mut rect = self.rect.get();
-        let speed = self.speed.get();
-        let maximum = self.maximum.get();
-
-        rect.x += (dir_x as f64 * speed as f64 * delta) as f64;
-        rect.y += (dir_y as f64 * speed as f64 * delta) as f64;
+        self.rect.x += (dir_x as f64 * self.speed as f64 * delta) as f64;
+        self.rect.y += (dir_y as f64 * self.speed as f64 * delta) as f64;
 
         let zero: f64 = 0.0;
 
-        // adjust to respect the render_bounds
-        rect.x = zero.max(rect.x.min(maximum.x));
-        rect.y = zero.max(rect.y.min(maximum.y));
-
-        self.rect().set(rect);
+        // adjust to respect the render_camera
+        self.rect.x = zero.max(self.rect.x.min(self.maximum.x));
+        self.rect.y = zero.max(self.rect.y.min(self.maximum.y));
     }
 
     // pub fn follow(&mut self, entity: &mut Entity) {
@@ -103,4 +160,75 @@ impl CameraExt for Camera {
     //     entity.screen_position().set(screen_position);
     //     self.rect.set(rect);
     // }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::prelude::*;
+    use orbtk::prelude::*;
+
+    #[test]
+    fn test_set_width() {
+        let mut camera = Camera::default();
+        camera.set_width(5.0);
+
+        assert_eq!(5.0, camera.width());
+    }
+
+    #[test]
+    fn test_set_height() {
+        let mut camera = Camera::default();
+        camera.set_height(5.0);
+
+        assert_eq!(5.0, camera.height());
+    }
+
+    #[test]
+    fn test_set_size() {
+        let mut camera = Camera::default();
+        camera.set_size(6.0, 7.0);
+
+        assert_eq!(6.0, camera.width());
+        assert_eq!(7.0, camera.height());
+    }
+
+    #[test]
+    fn test_set_x() {
+        let mut camera = Camera::default();
+        camera.set_x(5.0);
+
+        assert_eq!(5.0, camera.x());
+    }
+
+    #[test]
+    fn test_set_y() {
+        let mut camera = Camera::default();
+        camera.set_y(5.0);
+
+        assert_eq!(5.0, camera.y());
+    }
+
+    #[test]
+    fn test_set_position() {
+        let mut camera = Camera::default();
+        camera.set_position(6.0, 7.0);
+
+        assert_eq!(6.0, camera.x());
+        assert_eq!(7.0, camera.y());
+    }
+
+    #[test]
+    fn test_mov() {
+        let mut camera = Camera::new(Rect::new(0.0, 0.0, 10.0, 10.0), Point::new(100.0, 50.0));
+        camera.mov(0.2, -10.0, -10.0);
+        assert_eq!(0.0, camera.x());
+        assert_eq!(0.0, camera.y());
+
+        camera = Camera::new(Rect::new(0.0, 0.0, 10.0, 10.0), Point::new(100.0, 50.0));
+        camera.mov(1.0, 200.0, 200.0);
+        assert_eq!(100.0, camera.x());
+        assert_eq!(50.0, camera.y()); 
+
+        // todo additional tests      
+    }
 }
