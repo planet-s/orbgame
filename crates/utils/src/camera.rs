@@ -1,6 +1,70 @@
-use std::cell::Cell;
-
 use orbtk::prelude::*;
+
+/// Used to build a camera, specifying additional details.
+#[derive(Clone, Default, Debug)]
+pub struct CameraBuilder {
+    rect: Rect,
+    maximum: Point,
+    speed: f64,
+}
+
+impl CameraBuilder {
+    /// Creates a camera builder with default values.
+    pub fn new() -> Self {
+        CameraBuilder::default()
+    }
+
+    /// Inserts a x.
+    pub fn x(mut self, x: f64) -> Self {
+        self.rect.x = x;
+        self
+    }
+
+    /// Inserts a y.
+    pub fn y(mut self, y: f64) -> Self {
+        self.rect.y = y;
+        self
+    }
+
+    /// Inserts a width.
+    pub fn width(mut self, width: f64) -> Self {
+        self.rect.width = width;
+        self
+    }
+
+    /// Inserts a height.
+    pub fn height(mut self, height: f64) -> Self {
+        self.rect.height = height;
+        self
+    }
+
+    /// Inserts a max_width.
+    pub fn max_width(mut self, max_width: f64) -> Self {
+        self.maximum.x = max_width;
+        self
+    }
+
+    /// Inserts a max_height.
+    pub fn max_height(mut self, max_height: f64) -> Self {
+        self.maximum.y = max_height;
+        self
+    }
+
+    /// Inserts a speed.
+    pub fn speed(mut self, speed: f64) -> Self {
+        self.speed = speed;
+        self
+    }
+
+    /// Builds the camera.
+    pub fn build(self) -> Camera {
+        Camera {
+            rect: self.rect,
+            maximum: self.maximum,
+            speed: self.speed,
+        }
+    }
+}
 
 /// The camera is use to describes the viewport on a screen like a part of a tile map.
 ///
@@ -14,6 +78,10 @@ pub struct Camera {
 
 /// Describes the base behavior methods of a camera.
 pub trait CameraExt: Size + Position {
+    /// Creates a camera builder with default values.
+    fn create() -> CameraBuilder {
+        CameraBuilder::new()
+    }
     /// Gets the maximum.
     fn maximum(&self) -> &Point;
 
@@ -227,8 +295,21 @@ mod tests {
         camera = Camera::new(Rect::new(0.0, 0.0, 10.0, 10.0), Point::new(100.0, 50.0));
         camera.mov(1.0, 200.0, 200.0);
         assert_eq!(100.0, camera.x());
-        assert_eq!(50.0, camera.y()); 
+        assert_eq!(50.0, camera.y());
+        camera = Camera::new(Rect::new(0.0, 0.0, 10.0, 10.0), Point::new(100.0, 50.0));
+        camera.mov(1.0, -10.0, 200.0);
+        assert_eq!(0.0, camera.x());
+        assert_eq!(50.0, camera.y());
+    }
 
-        // todo additional tests      
+    #[test]
+    fn test_builder() {
+        assert_eq!(5.0, Camera::create().x(5.0).build().x());
+        assert_eq!(6.0, Camera::create().y(6.0).build().y());
+        assert_eq!(7.0, Camera::create().width(7.0).build().width());
+        assert_eq!(8.0, Camera::create().height(8.0).build().height());
+        assert_eq!(9.0, Camera::create().max_width(9.0).build().maximum().x);
+        assert_eq!(10.0, Camera::create().max_height(10.0).build().maximum().y);
+        assert_eq!(11.0, Camera::create().speed(11.0).build().speed());
     }
 }
