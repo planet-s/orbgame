@@ -1,0 +1,14 @@
+[[apps]]
+name = "dungeon"
+width = 800
+height = 600
+assets = "examples/res/dungeon/"
+    [[apps.fonts]]
+    font_family = "Material Icons"
+    src = "examples/res/dungeon/fonts/MaterialIcons-Regular.ttf"
+    [[apps.fonts]]
+    font_family = "Roboto Regular"
+    src = "examples/res/dungeon/fonts/Roboto-Regular.ttf"
+    [[apps.fonts]]
+    font_family = "Roboto Medium"
+    src = "examples/res/dungeon/fonts/Roboto-Medium.ttf"

@@ -3,8 +3,8 @@
 */
 
 pub use orbgame_utils::prelude as utils;
-pub use orbtk::api::*;
 pub use orbtk::api::Application as Game;
+pub use orbtk::api::*;
 
 pub mod prelude;
 pub mod properties;

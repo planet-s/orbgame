@@ -1,61 +1,75 @@
 use orbgame::prelude::*;
 use orbgame::theme::DEFAULT_THEME_CSS;
-use std::cell::Cell;
+use std::{cell::Cell, rc::Rc};
 
 static DUNGEON_THEME: &'static str = include_str!("res/dungeon/theme.css");
 
-fn get_theme() -> Theme {
-    Theme(ThemeValue::create_from_css(DEFAULT_THEME_CSS)
+fn get_theme() -> ThemeValue {
+    ThemeValue::create_from_css(DEFAULT_THEME_CSS)
         .extension_css(DUNGEON_THEME)
-        .build())
+        .build()
+}
+
+widget!(MapView {});
+
+impl Template for MapView {
+    fn template(self, _: Entity, ctx: &mut BuildContext) -> Self {
+        self.name("MapView").child(
+            Container::create()
+                .child(TextBlock::create().text("Dungeon").build(ctx))
+                .build(ctx),
+        )
+    }
+}
+
+#[derive(Copy, Clone)]
+pub enum MenuAction {
+    Start,
+    Quit,
 }
 
 #[derive(Default)]
 pub struct MenuViewState {
-    start_game: Cell<bool>,
-    close_game: Cell<bool>,
+    action: Cell<Option<MenuAction>>,
 }
 
 impl MenuViewState {
-    fn start_game(&self) {
-        println!("Start game");
-        self.start_game.set(true);
-    }
-
-    fn quit_game(&self) {
-        println!("Quit game");
-        self.close_game.set(true);
+    fn action(&self, action: MenuAction) {
+        self.action.set(Some(action));
     }
 }
 
 impl State for MenuViewState {
-    fn update(&self, context: &mut Context<'_>) {
-        if self.close_game.get() {
-            context.send_message("game_view", StringMessage::from("quit"));
-        }
+    fn update(&self, ctx: &mut Context<'_>) {
+        if let Some(action) = self.action.get() {
+            match action {
+                MenuAction::Start => {
+                    ctx.widget()
+                        .set::<Visibility>(Visibility::from("collapsed"));
+                }
+                MenuAction::Quit => {
+                    ctx.push_event(SystemEvent::Quit);
+                }
+            }
 
-        if self.start_game.get() {
-            context.send_message("game_view", StringMessage::from("start"));
+            self.action.set(None);
         }
     }
 }
 
 widget!(
-        MenuView<MenuViewState> {
-             selector: Selector,
-
-             text: Text
-        }
-    );
+    MenuView<MenuViewState> {
+        selector: Selector
+    }
+);
 
 impl Template for MenuView {
-    fn template(self, _: Entity, context: &mut BuildContext) -> Self {
+    fn template(self, _: Entity, ctx: &mut BuildContext) -> Self {
         let state = self.clone_state();
         let ng_state = state.clone();
         let q_state = state.clone();
 
         self.name("MenuView")
-            .text("Test")
             .selector(Selector::default().id("menu_view"))
             .child(
                 Grid::create()
@@ -73,33 +87,33 @@ impl Template for MenuView {
                                             .selector(Selector::from("textblock").class("h1"))
                                             .text("Dungeon")
                                             .horizontal_alignment("Center")
-                                            .build(context),
+                                            .build(ctx),
                                     )
                                     .child(
                                         Button::create()
                                             .margin((0.0, 16.0, 0.0, 0.0))
                                             .text("Start Game")
                                             .on_click(move |_| {
-                                                ng_state.start_game();
+                                                ng_state.action(MenuAction::Start);
                                                 true
                                             })
-                                            .build(context),
+                                            .build(ctx),
                                     )
                                     .child(
                                         Button::create()
                                             .margin((0.0, 8.0, 0.0, 0.0))
                                             .text("Quit")
                                             .on_click(move |_| {
-                                                q_state.quit_game();
+                                                q_state.action(MenuAction::Quit);
                                                 true
                                             })
-                                            .build(context),
+                                            .build(ctx),
                                     )
-                                    .build(context),
+                                    .build(ctx),
                             )
-                            .build(context),
+                            .build(ctx),
                     )
-                    .build(context),
+                    .build(ctx),
             )
     }
 }
@@ -108,17 +122,17 @@ impl Template for MenuView {
 pub struct GameViewState {}
 
 impl State for GameViewState {
-    fn receive_messages(&self, context: &mut Context<'_>, messages: &Vec<MessageBox>) {
+    fn receive_messages(&self, ctx: &mut Context<'_>, messages: &Vec<MessageBox>) {
         for message in messages {
             if let Ok(message) = message.downcast_ref::<StringMessage>() {
                 match message.0.as_str() {
                     "start" => {
-                        if let Some(menu_view) = &mut context.child_by_id("menu_view") {
+                        if let Some(menu_view) = &mut ctx.child_by_id("menu_view") {
                             menu_view.set::<Visibility>(Visibility::from("Collapsed"));
                         }
                     }
                     "quit" => {
-                        context.push_event(SystemEvent::Quit);
+                        ctx.push_event(SystemEvent::Quit);
                     }
                     _ => {}
                 }
@@ -128,24 +142,24 @@ impl State for GameViewState {
 }
 
 widget!(
-        GameView<GameViewState> {
-            selector: Selector
-        }
-    );
+    GameView<GameViewState> {
+        selector: Selector
+    }
+);
 
 impl Template for GameView {
-    fn template(self, _: Entity, context: &mut BuildContext) -> Self {
+    fn template(self, _: Entity, ctx: &mut BuildContext) -> Self {
         self.name("GameView")
             .selector(Selector::default().id("game_view"))
             .child(
                 Grid::create()
                     .child(
-                        Container::create()
-                            .child(TextBlock::create().text("Dungeon").build(context))
-                            .build(context),
+                        MapView::create()
+                            // .visibility(Visibility::from("collapsed"))
+                            .build(ctx),
                     )
-                    .child(MenuView::create().build(context))
-                    .build(context),
+                    .child(MenuView::create().build(ctx))
+                    .build(ctx),
             )
     }
 }

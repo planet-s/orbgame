@@ -9,7 +9,7 @@ widget!(
 );
 
 impl Template for TileMap {
-    fn template(self, id: Entity, context: &mut BuildContext) -> Self {
+    fn template(self, id: Entity, ctx: &mut BuildContext) -> Self {
         self.name("TileMap")
     }
 }
