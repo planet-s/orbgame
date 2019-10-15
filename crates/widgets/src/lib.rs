@@ -1,6 +1,8 @@
 /*!
-    Additional OrbGame widget library.
- */
+   Additional OrbGame widget library.
+*/
+
+pub use orbtk::widgets::*;
 
 pub mod prelude;
 

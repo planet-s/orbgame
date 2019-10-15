@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="CPP_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/crates/api/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/api/examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/api/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/api/benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/utils/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/utils/examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/utils/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/utils/benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/widgets/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/widgets/examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/widgets/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/widgets/benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/benches" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/crates/api/target" />
+      <excludeFolder url="file://$MODULE_DIR$/crates/utils/target" />
+      <excludeFolder url="file://$MODULE_DIR$/crates/widgets/target" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

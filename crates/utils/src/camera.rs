@@ -1,7 +1,7 @@
 use orbtk::prelude::*;
 
 /// Used to build a camera, specifying additional details.
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Default, Debug, PartialEq)]
 pub struct CameraBuilder {
     rect: Rect,
     maximum: Point,
@@ -69,19 +69,22 @@ impl CameraBuilder {
 /// The camera is use to describes the viewport on a screen like a part of a tile map.
 ///
 /// The camera can be moved.
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Default, Debug, PartialEq)]
 pub struct Camera {
     rect: Rect,
     maximum: Point,
     speed: f64,
 }
 
-/// Describes the base behavior methods of a camera.
-pub trait CameraExt: Size + Position {
+impl Camera {
     /// Creates a camera builder with default values.
-    fn create() -> CameraBuilder {
+    pub fn create() -> CameraBuilder {
         CameraBuilder::new()
     }
+}
+
+/// Describes the base behavior methods of a camera.
+pub trait CameraExt {
     /// Gets the maximum.
     fn maximum(&self) -> &Point;
 
@@ -233,7 +236,6 @@ impl CameraExt for Camera {
 #[cfg(test)]
 mod tests {
     use crate::prelude::*;
-    use orbtk::prelude::*;
 
     #[test]
     fn test_set_width() {

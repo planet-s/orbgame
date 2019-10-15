@@ -1,5 +1,14 @@
 use orbgame::prelude::*;
+use orbgame::theme::DEFAULT_THEME_CSS;
 use std::cell::Cell;
+
+static DUNGEON_THEME: &'static str = include_str!("res/dungeon/theme.css");
+
+fn get_theme() -> Theme {
+    Theme(ThemeValue::create_from_css(DEFAULT_THEME_CSS)
+        .extension_css(DUNGEON_THEME)
+        .build())
+}
 
 #[derive(Default)]
 pub struct MenuViewState {
@@ -33,7 +42,9 @@ impl State for MenuViewState {
 
 widget!(
         MenuView<MenuViewState> {
-             selector: Selector
+             selector: Selector,
+
+             text: Text
         }
     );
 
@@ -44,6 +55,7 @@ impl Template for MenuView {
         let q_state = state.clone();
 
         self.name("MenuView")
+            .text("Test")
             .selector(Selector::default().id("menu_view"))
             .child(
                 Grid::create()
@@ -145,10 +157,7 @@ fn main() {
                 .title("OrbGame - dungeon example")
                 .position((100.0, 100.0))
                 .size(800.0, 600.0)
-                .theme(ThemeValue::create()
-                    .extension_css(include_str!("res/dungeon/theme.css"))
-                    .build()
-                )
+                .theme(get_theme())
                 .child(GameView::create().build(ctx))
                 .build(ctx)
         })
