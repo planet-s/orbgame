@@ -31,11 +31,21 @@ impl Template for MapView {
                     Grid::create()
                         .child(
                             TileMap::create()
+                                .camera(
+                                    CameraBuilder::new()
+                                        .x(0.0)
+                                        .y(0.0)
+                                        .width(96.0)
+                                        .height(96.0)
+                                        .max_width(96.0)
+                                        .max_height(96.0)
+                                        .build(),
+                                )
                                 .map("res/dungeon/dungeon.ron")
                                 .image("res/dungeon/tile_set.png")
                                 .build(ctx),
                         )
-                        .child(TextBlock::create().text("Dungeon").build(ctx))
+                        // .child(TextBlock::create().text("Dungeon").build(ctx))
                         .build(ctx),
                 )
                 .build(ctx),

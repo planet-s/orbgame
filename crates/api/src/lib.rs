@@ -8,3 +8,4 @@ pub use orbtk::api::*;
 
 pub mod prelude;
 pub mod properties;
+pub mod render_object;
