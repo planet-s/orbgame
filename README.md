@@ -1,9 +1,21 @@
 # OrbGame
 
-[OrbTk](https://gitlab.redox-os.org/redox-os/orbtk.git) extensions for 2D game development. Compatible with Redox and SDL2. 
+OrbGame is a game extion for [OrbTk](https://gitlab.redox-os.org/redox-os/orbtk.git) to develop 2D games.
 
 [![Build status](https://gitlab.redox-os.org/redox-os/orbgame/badges/master/build.svg)](https://gitlab.redox-os.org/redox-os/orbgame/pipelines)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+
+## Platforms
+
+* Redox OS (native | cargo-node)
+* Linux (native | cargo-node)
+* macOS (native | cargo-node)
+* Windows (native | cargo-node)
+* openBSD (not tested, but should work)
+* Web (cargo-node)
+* Android (native planned after 0.3 | cargo-node)
+* iOS (native planned after 0.3 | cargo-node planned after 0.3)
+* Ubuntu Touch (native planned  after 0.3 | cargo-node planned for 0.3)
 
 ## Usage
 
@@ -13,11 +25,6 @@ line to your `Cargo.toml` file:
 ```text
 orbgame = { git = "https://gitlab.redox-os.org/redox-os/orbgame.git" }
 ```
-
-However you also need to have the SDL2 libraries installed on your
-system.  The best way to do this is documented [by the SDL2
-crate](https://github.com/AngryLawyer/rust-sdl2#user-content-requirements).
-
 ## Minimal Example
 
 ```rust
@@ -37,9 +44,9 @@ fn main() {
 }
 ```
 
-## Additional Examples
+## Run Examples
 
-You find the examples in the `examples/` directory.
+You can find examples in the `examples/` directory.
 
 You can start the widgets example by executing the following command:
 
@@ -47,34 +54,38 @@ You can start the widgets example by executing the following command:
 cargo run --example dungeon --release
 ```
 
-## Additional Examples on Web
+## Run Examples with cargo-node
 
-To run the examples on a browser you have to install 
+To run the examples on as browser, electron or cordova app you have to install
 
 ```text
-cargo install -f cargo-web
+cargo install -f cargo-node
 ```
 
-### Run
+Before you could use cargo node you have to install `npm` version 6.9.0. It is included in the `Node.js` version 10.16.3. You could download it from https://nodejs.org/dist/v10.16.3/. 
 
-You can start the dungeon example by executing the following command:
+Rust's `cargo` is presumed. All other dependencies of cargo node will be installed automatic.
 
-* Compile to [WebAssembly](https://en.wikipedia.org/wiki/WebAssembly) using Rust's native WebAssembly backend:
+### Start examples
+
+You can start the widgets example by executing the following command:
+
+* Run as browser app:
 
 ```text
-cargo web start --target=wasm32-unknown-unknown --auto-reload --example dungeon
+cargo node run --browser --example dungeon
 ```
 
-* Compile to [asm.js](https://en.wikipedia.org/wiki/Asm.js) using Emscripten:
+* Run as electron app:
 
 ```text
-$ cargo web start --target=asmjs-unknown-emscripten --auto-reload --example dungeon
+cargo node run --electron --example dungeon
 ```
 
-* Compile to WebAssembly using Emscripten:
+* Run as cordova app on android:
 
 ```text
-$ cargo web start --target=wasm32-unknown-emscripten --auto-reload --example dungeon
+cargo node run --android --example dungeon
 ```
 
 ## Build and run documentation
@@ -87,10 +98,14 @@ cargo doc --no-deps --open
 
 ## Sub Crates
 
-* api: additional game elements
-* utils: Game helper structs and traits
-* widgets: Game widget library
+* [api](https://gitlab.redox-os.org/redox-os/orbgame/tree/master/crates/api): additional game elements
+* [utils](https://gitlab.redox-os.org/redox-os/orbgame/tree/master/crates/utils): Game helper structs and traits
+* [widgets](https://gitlab.redox-os.org/redox-os/orbgame/tree/master/crates/widgets): Game widget library
 
  ## Credits
  
  * https://pixel-poem.itch.io/dungeon-assetpuck
+
+## License
+
+Licensed under MIT license ([LICENSE](LICENSE)).
