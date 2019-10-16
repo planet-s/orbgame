@@ -10,3 +10,6 @@ edition = "2018"
 
 [dependencies]
 orbtk = { git = "https://gitlab.redox-os.org/redox-os/orbtk.git" }
+serde = "1.0.101"
+serde_derive = "1.0.101"
+ron = "0.5.1"

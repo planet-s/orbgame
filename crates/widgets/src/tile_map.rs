@@ -1,4 +1,4 @@
-use crate::prelude::*;
+use crate::{prelude::*};
 
 widget!(
     /// The `TileMap` widget is use to draw a tile map to the screen an to navigate on the map with a camera.

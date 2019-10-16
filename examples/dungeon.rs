@@ -5,7 +5,7 @@ use std::{
     rc::Rc,
 };
 
-static DUNGEON_THEME: &'static str = include_str!("res/dungeon/theme.css");
+static DUNGEON_THEME: &'static str = include_str!("../res/dungeon/theme.css");
 
 fn get_theme() -> ThemeValue {
     ThemeValue::create_from_css(DEFAULT_THEME_CSS)
@@ -29,7 +29,12 @@ impl Template for MapView {
                 .background("#000000")
                 .child(
                     Grid::create()
-                        .child(TileMap::create().build(ctx))
+                        .child(
+                            TileMap::create()
+                                .map("res/dungeon/dungeon.ron")
+                                .image("res/dungeon/tile_set.png")
+                                .build(ctx),
+                        )
                         .child(TextBlock::create().text("Dungeon").build(ctx))
                         .build(ctx),
                 )

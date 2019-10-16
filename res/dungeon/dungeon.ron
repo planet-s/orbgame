@@ -2,11 +2,15 @@ Map (
     layer_count: 1,
     row_count: 6,
     column_count: 6,
+    tile_size: 16,
+    blocked_tiles: [
+
+    ],
     layers: [
-        Layer {
+        Layer (
             tiles: [
                 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6
             ]
-        }
+        ),
     ]
 )

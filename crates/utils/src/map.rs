@@ -1,6 +1,9 @@
-use std::mem::replace;
+use std::{fs::File, io::prelude::*};
 
-#[derive(Default, Clone, Debug, PartialEq)]
+use ron::de::from_str;
+use serde_derive::Deserialize;
+
+#[derive(Default, Clone, Debug, PartialEq, Deserialize)]
 pub struct Layer {
     pub tiles: Vec<i32>,
 }
@@ -17,7 +20,7 @@ impl Layer {
     }
 }
 
-#[derive(Default, Clone, Debug, PartialEq)]
+#[derive(Default, Clone, Debug, PartialEq, Deserialize)]
 pub struct Map {
     pub layer_count: usize,
     pub row_count: usize,
@@ -118,5 +121,32 @@ impl MapExt for Map {
         let row = (y / self.tile_size as f32).floor() as usize;
 
         self.is_blocked(column, row)
+    }
+}
+
+impl From<&str> for Map {
+    fn from(s: &str) -> Self {
+        if let Ok(file) = &mut File::open(s) {
+            let mut contents = String::new();
+            file.read_to_string(&mut contents).unwrap();
+            let map: Map = match from_str(contents.as_str()) {
+                Ok(x) => x,
+                Err(e) => {
+                    println!("Failed to load config: {:?}", e);
+
+                    std::process::exit(1);
+                }
+            };
+
+            return map;
+        } else {
+            panic!("Could not load file {}", s);
+        }
+    }
+}
+
+impl From<String> for Map {
+    fn from(string: String) -> Self {
+        Map::from(string.as_str())
     }
 }

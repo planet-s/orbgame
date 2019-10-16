@@ -1,10 +1,11 @@
 use crate::{
     prelude::*,
-    utils::{Map as MapValue, MapExt, Layer},
+    utils::{Map as MapValue, MapExt},
 };
 
 property!(
-    Map(MapValue)
+    Map(MapValue) : &str, 
+    String
 );
 
 impl MapExt for Map {
