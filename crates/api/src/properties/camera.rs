@@ -1,6 +1,6 @@
 use crate::{
     prelude::*,
-    utils::{Camera as CameraValue, CameraExt, Position, Size, Point},
+    utils::{Camera as CameraValue, CameraExt, Point, Position, Size},
 };
 
 property!(
