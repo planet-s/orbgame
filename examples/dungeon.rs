@@ -19,14 +19,20 @@ pub struct MapViewState {}
 impl State for MapViewState {}
 
 widget!(MapView<MapViewState> {
-     selector: Selector
+    selector: Selector
 });
 
 impl Template for MapView {
     fn template(self, _: Entity, ctx: &mut BuildContext) -> Self {
         self.name("MapView").child(
             Container::create()
-                .child(TextBlock::create().text("Dungeon").build(ctx))
+                .background("#000000")
+                .child(
+                    Grid::create()
+                        .child(TileMap::create().build(ctx))
+                        .child(TextBlock::create().text("Dungeon").build(ctx))
+                        .build(ctx),
+                )
                 .build(ctx),
         )
     }
@@ -177,9 +183,11 @@ impl State for GameViewState {
         if let Some(event) = self.event.get() {
             match event {
                 GameEvent::StartGame => {
-                    ctx.child_by_id("menu_view").unwrap()
+                    ctx.child_by_id("menu_view")
+                        .unwrap()
                         .set::<Visibility>(Visibility::from("collapsed"));
-                     ctx.child_by_id("map_view").unwrap()
+                    ctx.child_by_id("map_view")
+                        .unwrap()
                         .set::<Visibility>(Visibility::from("visible"));
                 }
                 GameEvent::Quit => {
@@ -211,7 +219,7 @@ impl Template for GameView {
                 Grid::create()
                     .child(
                         MapView::create()
-                          .selector(Selector::default().id("map_view"))
+                            .selector(Selector::default().id("map_view"))
                             .visibility(Visibility::from("collapsed"))
                             .build(ctx),
                     )

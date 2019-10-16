@@ -102,10 +102,10 @@ cargo doc --no-deps --open
 * [utils](https://gitlab.redox-os.org/redox-os/orbgame/tree/master/crates/utils): Game helper structs and traits
 * [widgets](https://gitlab.redox-os.org/redox-os/orbgame/tree/master/crates/widgets): Game widget library
 
- ## Credits
+## Credits
  
- * https://pixel-poem.itch.io/dungeon-assetpuck
+* https://pixel-poem.itch.io/dungeon-assetpuck
 
 ## License
 
-Licensed under MIT license ([LICENSE](LICENSE)).
+Licensed under MIT license ([LICENSE](LICENSE))
