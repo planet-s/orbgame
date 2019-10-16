@@ -1,6 +1,6 @@
 use orbgame::prelude::*;
 use orbgame::theme::DEFAULT_THEME_CSS;
-use std::{cell::Cell, rc::Rc};
+use std::{cell::{Cell, RefCell}, rc::Rc};
 
 static DUNGEON_THEME: &'static str = include_str!("res/dungeon/theme.css");
 
@@ -10,7 +10,39 @@ fn get_theme() -> ThemeValue {
         .build()
 }
 
-widget!(MapView {});
+#[derive(Copy, Clone)]
+pub enum MapViewAction {
+    Start,
+}
+
+#[derive(Default, Clone)]
+pub struct MapViewState {
+    action: Cell<Option<MapViewAction>>,
+}
+
+impl MapViewState {
+    pub fn action(&self, action: MapViewAction) {
+        self.action.set(Some(action));
+    }
+}
+
+impl State for MapViewState {
+    fn update(&self, ctx: &mut Context<'_>) {
+        if let Some(action) = self.action.get() {
+            match action {
+                MapViewAction::Start => {
+                    ctx.widget().set::<Visibility>(Visibility::from("Visible"));
+                }
+            }
+
+            self.action.set(None);
+        }
+    }
+}
+
+widget!(MapView<MapViewState> {
+
+});
 
 impl Template for MapView {
     fn template(self, _: Entity, ctx: &mut BuildContext) -> Self {
@@ -31,11 +63,16 @@ pub enum MenuAction {
 #[derive(Default)]
 pub struct MenuViewState {
     action: Cell<Option<MenuAction>>,
+    map_view_state: RefCell<Option<Rc<MapViewState>>>,
 }
 
 impl MenuViewState {
     fn action(&self, action: MenuAction) {
         self.action.set(Some(action));
+    }
+
+    fn set_map_view_state(&self, state: Rc<MapViewState>) {
+        *self.map_view_state.borrow_mut() = Some(state);
     }
 }
 
@@ -46,6 +83,9 @@ impl State for MenuViewState {
                 MenuAction::Start => {
                     ctx.widget()
                         .set::<Visibility>(Visibility::from("collapsed"));
+                    if let Some(state) = &*self.map_view_state.borrow() {
+                        state.action(MapViewAction::Start);
+                    }
                 }
                 MenuAction::Quit => {
                     ctx.push_event(SystemEvent::Quit);
@@ -117,48 +157,30 @@ impl Template for MenuView {
             )
     }
 }
-
-#[derive(Default)]
-pub struct GameViewState {}
-
-impl State for GameViewState {
-    fn receive_messages(&self, ctx: &mut Context<'_>, messages: &Vec<MessageBox>) {
-        for message in messages {
-            if let Ok(message) = message.downcast_ref::<StringMessage>() {
-                match message.0.as_str() {
-                    "start" => {
-                        if let Some(menu_view) = &mut ctx.child_by_id("menu_view") {
-                            menu_view.set::<Visibility>(Visibility::from("Collapsed"));
-                        }
-                    }
-                    "quit" => {
-                        ctx.push_event(SystemEvent::Quit);
-                    }
-                    _ => {}
-                }
-            }
-        }
-    }
-}
-
 widget!(
-    GameView<GameViewState> {
+    GameView {
         selector: Selector
     }
 );
 
 impl Template for GameView {
     fn template(self, _: Entity, ctx: &mut BuildContext) -> Self {
+        let map_view = MapView::create();
+        let map_view_state = map_view.clone_state();
+        let menu_view = MenuView::create();
+        let menu_view_state = menu_view.clone_state();
+        menu_view_state.set_map_view_state(map_view_state);
+
         self.name("GameView")
             .selector(Selector::default().id("game_view"))
             .child(
                 Grid::create()
                     .child(
-                        MapView::create()
-                            // .visibility(Visibility::from("collapsed"))
+                        map_view
+                            .visibility(Visibility::from("collapsed"))
                             .build(ctx),
                     )
-                    .child(MenuView::create().build(ctx))
+                    .child(menu_view.build(ctx))
                     .build(ctx),
             )
     }
