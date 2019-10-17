@@ -7,6 +7,10 @@ grid.start {
     background: #25131A;
 }
 
+container {
+    background: #25131A;
+}
+
 container.menu {
     background: #6E4A48;
     border-color: #472B43;

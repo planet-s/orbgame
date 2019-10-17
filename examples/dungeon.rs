@@ -1,5 +1,5 @@
-use orbgame::prelude::*;
 use orbgame::theme::DEFAULT_THEME_CSS;
+use orbgame::{prelude::*, shell::KeyEvent};
 use std::{
     cell::{Cell, RefCell},
     rc::Rc,
@@ -13,43 +13,90 @@ fn get_theme() -> ThemeValue {
         .build()
 }
 
+#[derive(Copy, Clone)]
+pub enum MapViewAction {
+    OpenMenu,
+}
+
 #[derive(Default, Clone)]
-pub struct MapViewState {}
+pub struct MapViewState {
+    action: Cell<Option<MapViewAction>>,
+}
 
-impl State for MapViewState {}
+impl MapViewState {
+    fn action(&self, action: MapViewAction) {
+        self.action.set(Some(action));
+    }
+}
 
-widget!(MapView<MapViewState> {
+impl State for MapViewState {
+    fn init(&self, ctx: &mut Context<'_>) {
+        // workaround
+        ctx.window().get_mut::<Global>().focused_widget = Some(ctx.entity);
+    }
+
+    fn update(&self, ctx: &mut Context<'_>) {
+        if let Some(action) = self.action.get() {
+            if let Some(window_id) = ctx.parent_entity_by_element("window") {
+                match action {
+                    MapViewAction::OpenMenu => {
+                        ctx.push_event_by_entity(GameEvent::OpenMenu, window_id);
+                    }
+                }
+            }
+
+            self.action.set(None);
+        }
+    }
+}
+
+widget!(MapView<MapViewState> : KeyDownHandler {
     selector: Selector
 });
 
 impl Template for MapView {
     fn template(self, _: Entity, ctx: &mut BuildContext) -> Self {
-        self.name("MapView").child(
-            Container::create()
-                .background("#000000")
-                .child(
-                    Grid::create()
-                        .child(
-                            TileMap::create()
-                                .camera(
-                                    CameraBuilder::new()
-                                        .x(0.0)
-                                        .y(0.0)
-                                        .width(352.0)
-                                        .height(352.0)
-                                        .max_width(352.0)
-                                        .max_height(352.0)
-                                        .build(),
-                                )
-                                .map("res/dungeon/dungeon.ron")
-                                .image("res/dungeon/tile_set.png")
-                                .build(ctx),
-                        )
-                        // .child(TextBlock::create().text("Dungeon").build(ctx))
-                        .build(ctx),
-                )
-                .build(ctx),
-        )
+        let state = self.clone_state();
+
+        self.name("MapView")
+            .child(
+                Container::create()
+                    .selector("container")
+                    .child(
+                        Grid::create()
+                            .child(
+                                TileMap::create()
+                                    .camera(
+                                        CameraBuilder::new()
+                                            .x(0.0)
+                                            .y(0.0)
+                                            .width(352.0)
+                                            .height(352.0)
+                                            .max_width(352.0)
+                                            .max_height(352.0)
+                                            .build(),
+                                    )
+                                    .map("res/dungeon/dungeon.ron")
+                                    .image("res/dungeon/tile_set.png")
+                                    .build(ctx),
+                            )
+                            .child(
+                                TextBlock::create()
+                                    .text("Press ESC to open menu")
+                                    .vertical_alignment("bottom")
+                                    .margin(4.0)
+                                    .build(ctx),
+                            )
+                            .build(ctx),
+                    )
+                    .build(ctx),
+            )
+            .on_key_down(move |event: KeyEvent| -> bool {
+                if event.key == Key::Escape {
+                    state.action(MapViewAction::OpenMenu);
+                }
+                true
+            })
     }
 }
 
@@ -150,6 +197,7 @@ impl Template for MenuView {
 
 #[derive(Copy, Clone)]
 pub enum GameEvent {
+    OpenMenu,
     StartGame,
     Quit,
 }
@@ -197,6 +245,14 @@ impl State for GameViewState {
     fn update(&self, ctx: &mut Context<'_>) {
         if let Some(event) = self.event.get() {
             match event {
+                GameEvent::OpenMenu => {
+                    ctx.child_by_id("map_view")
+                        .unwrap()
+                        .set::<Visibility>(Visibility::from("collapsed"));
+                    ctx.child_by_id("menu_view")
+                        .unwrap()
+                        .set::<Visibility>(Visibility::from("visible"));
+                }
                 GameEvent::StartGame => {
                     ctx.child_by_id("menu_view")
                         .unwrap()
