@@ -116,7 +116,7 @@ impl From<&str> for Map {
                 }
             };
 
-            return map;
+            map
         } else {
             panic!("Could not load file {}", s);
         }
