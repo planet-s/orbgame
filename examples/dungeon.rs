@@ -32,7 +32,7 @@ impl MapViewState {
 impl State for MapViewState {
     fn init(&self, ctx: &mut Context<'_>) {
         // workaround
-        ctx.window().get_mut::<Global>().focused_widget = Some(ctx.entity);
+        ctx.window().get_mut::<Global>("global").focused_widget = Some(ctx.entity);
     }
 
     fn update(&self, ctx: &mut Context<'_>) {
@@ -248,18 +248,18 @@ impl State for GameViewState {
                 GameEvent::OpenMenu => {
                     ctx.child_by_id("map_view")
                         .unwrap()
-                        .set::<Visibility>(Visibility::from("collapsed"));
+                        .set("visibility", Visibility::from("collapsed"));
                     ctx.child_by_id("menu_view")
                         .unwrap()
-                        .set::<Visibility>(Visibility::from("visible"));
+                        .set("visibility", Visibility::from("visible"));
                 }
                 GameEvent::StartGame => {
                     ctx.child_by_id("menu_view")
                         .unwrap()
-                        .set::<Visibility>(Visibility::from("collapsed"));
+                        .set("visibility", Visibility::from("collapsed"));
                     ctx.child_by_id("map_view")
                         .unwrap()
-                        .set::<Visibility>(Visibility::from("visible"));
+                        .set("visibility", Visibility::from("visible"));
                 }
                 GameEvent::Quit => {
                     ctx.push_event(SystemEvent::Quit);

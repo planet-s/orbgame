@@ -1,5 +1,4 @@
-use crate::api::prelude::TileMapRenderObject;
-use crate::prelude::*;
+use crate::{api::prelude::TileMapRenderObject, prelude::*, utils::*};
 
 widget!(
     /// The `TileMap` widget is use to draw a tile map to the screen an to navigate on the map with a camera.
@@ -16,7 +15,7 @@ widget!(
 );
 
 impl Template for TileMap {
-    fn template(self, id: Entity, ctx: &mut BuildContext) -> Self {
+    fn template(self, _: Entity, _: &mut BuildContext) -> Self {
         self.name("TileMap")
     }
 

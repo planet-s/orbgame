@@ -3,6 +3,8 @@ use std::{fs::File, io::prelude::*};
 use ron::de::from_str;
 use serde_derive::Deserialize;
 
+use orbtk::prelude::*;
+
 #[derive(Default, Clone, Debug, PartialEq, Deserialize)]
 pub struct Layer {
     pub tiles: Vec<i32>,
@@ -30,50 +32,26 @@ pub struct Map {
     pub layers: Vec<Layer>,
 }
 
-pub trait MapExt {
-    fn layer_count(&self) -> usize;
+into_property_source!(Map: &str, String);
 
-    fn row_count(&self) -> usize;
-
-    fn column_count(&self) -> usize;
-
-    fn tile_size(&self) -> u32;
-
-    fn get_tile(&self, layer: usize, row: usize, column: usize) -> i32;
-
-    fn get_column(&self, x: f32) -> f32;
-
-    fn get_row(&self, y: f32) -> f32;
-
-    fn get_x(&self, column: f32) -> f32;
-
-    fn get_y(&self, row: f32) -> f32;
-
-    fn is_blocked(&self, column: usize, row: usize) -> bool;
-
-    fn set_tile(&mut self, layer: usize, column: usize, row: usize, tile: i32);
-
-    fn is_tile_blocked(&self, x: f32, y: f32) -> bool;
-}
-
-impl MapExt for Map {
-    fn layer_count(&self) -> usize {
+impl Map {
+    pub fn layer_count(&self) -> usize {
         self.layer_count
     }
 
-    fn row_count(&self) -> usize {
+    pub fn row_count(&self) -> usize {
         self.row_count
     }
 
-    fn column_count(&self) -> usize {
+    pub fn column_count(&self) -> usize {
         self.column_count
     }
 
-    fn tile_size(&self) -> u32 {
+    pub fn tile_size(&self) -> u32 {
         self.tile_size
     }
 
-    fn get_tile(&self, layer: usize, row: usize, column: usize) -> i32 {
+    pub fn get_tile(&self, layer: usize, row: usize, column: usize) -> i32 {
         if let Some(l) = self.layers.get(layer) {
             if let Some(t) = l.tiles.get(row * self.column_count + column) {
                 return *t;
@@ -82,23 +60,23 @@ impl MapExt for Map {
         -1
     }
 
-    fn get_column(&self, x: f32) -> f32 {
+    pub fn get_column(&self, x: f32) -> f32 {
         (x / self.tile_size as f32).floor()
     }
 
-    fn get_row(&self, y: f32) -> f32 {
+    pub fn get_row(&self, y: f32) -> f32 {
         (y / self.tile_size as f32).floor()
     }
 
-    fn get_x(&self, column: f32) -> f32 {
+    pub fn get_x(&self, column: f32) -> f32 {
         column * self.tile_size as f32
     }
 
-    fn get_y(&self, row: f32) -> f32 {
+    pub fn get_y(&self, row: f32) -> f32 {
         row * self.tile_size as f32
     }
 
-    fn is_blocked(&self, column: usize, row: usize) -> bool {
+    pub fn is_blocked(&self, column: usize, row: usize) -> bool {
         for l in &self.layers {
             if let Some(t) = l.tiles.get(row * self.column_count + column) {
                 if self.blocked_tiles.contains(&t) {
@@ -110,13 +88,13 @@ impl MapExt for Map {
         false
     }
 
-    fn set_tile(&mut self, layer: usize, column: usize, row: usize, tile: i32) {
+    pub fn set_tile(&mut self, layer: usize, column: usize, row: usize, tile: i32) {
         if let Some(layer) = self.layers.get_mut(layer) {
             layer.set_tile(row * self.column_count + column, tile);
         }
     }
 
-    fn is_tile_blocked(&self, x: f32, y: f32) -> bool {
+    pub fn is_tile_blocked(&self, x: f32, y: f32) -> bool {
         let column = (x / self.tile_size as f32).floor() as usize;
         let row = (y / self.tile_size as f32).floor() as usize;
 

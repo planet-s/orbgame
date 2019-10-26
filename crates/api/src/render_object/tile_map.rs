@@ -1,6 +1,7 @@
 use crate::{
     prelude::*,
-    utils::{MapExt, Point, Position, Size},
+    render::Image,
+    utils::{Map, Point, Camera, Rectangle},
 };
 
 pub struct TileMapRenderObject;
@@ -16,31 +17,25 @@ impl RenderObject for TileMapRenderObject {
         let (bounds, camera, map, mut image) = {
             let widget = context.widget();
             (
-                widget.get::<Bounds>().0.clone(),
-                widget.get::<Camera>().0.clone(),
-                widget.get::<Map>().0.clone(),
-                widget.try_clone::<Image>(),
+                widget.clone::<Rectangle>("bounds"),
+                widget.clone::<Camera>("camera"),
+                widget.clone::<Map>("map"),
+                widget.try_clone::<Image>("image"),
             )
         };
 
         if let Some(image) = &mut image {
             // draw the tile map
-            let mut start_column = 0;
-            let mut end_column = 0;
-            let mut start_row = 0;
-            let mut end_row = 0;
-            let mut offset_x = 0.;
-            let mut offset_y = 0.;
 
             let tile_size = map.tile_size;
 
-            start_column = (camera.x() as f32 / tile_size as f32).floor() as usize;
-            end_column = start_column + (camera.width() as f32 / tile_size as f32).ceil() as usize;
-            start_row = (camera.y() as f32 / tile_size as f32).floor() as usize;
-            end_row = start_row + (camera.height() as f32 / tile_size as f32).ceil() as usize;
-            offset_x =
+            let start_column = (camera.x() as f32 / tile_size as f32).floor() as usize;
+            let end_column = start_column + (camera.width() as f32 / tile_size as f32).ceil() as usize;
+            let start_row = (camera.y() as f32 / tile_size as f32).floor() as usize;
+            let end_row = start_row + (camera.height() as f32 / tile_size as f32).ceil() as usize;
+            let offset_x =
                 bounds.x as f32 + -camera.x() as f32 + start_column as f32 * tile_size as f32;
-            offset_y = bounds.y as f32 + -camera.y() as f32 + start_row as f32 * tile_size as f32;
+            let offset_y = bounds.y as f32 + -camera.y() as f32 + start_row as f32 * tile_size as f32;
 
             for l in 0..map.layer_count {
                 // add 1 to prevent missing tiles at the borders
@@ -71,11 +66,9 @@ impl RenderObject for TileMapRenderObject {
                             + offset_x as f32) as i32;
                         let s_y = (((r - start_row) as f32) * map.tile_size as f32
                             + offset_y as f32) as i32;
-                        let s_width = tile_c as u32 * map.tile_size;
-                        let s_height = tile_r as u32 * map.tile_size;
 
                         context.render_context_2_d().draw_image_with_clip(
-                            &mut image.0,
+                            image,
                             tile_c as f64 * map.tile_size() as f64,
                             tile_r as f64 * map.tile_size() as f64,
                             map.tile_size as f64,
