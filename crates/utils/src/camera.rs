@@ -286,16 +286,25 @@ mod tests {
 
     #[test]
     fn test_mov() {
-        let mut camera = Camera::new(Rectangle::new(0.0, 0.0, 10.0, 10.0), Point::new(100.0, 50.0));
+        let mut camera = Camera::new(
+            Rectangle::new(0.0, 0.0, 10.0, 10.0),
+            Point::new(100.0, 50.0),
+        );
         camera.mov(0.2, -10.0, -10.0);
         assert_eq!(0.0, camera.x());
         assert_eq!(0.0, camera.y());
 
-        camera = Camera::new(Rectangle::new(0.0, 0.0, 10.0, 10.0), Point::new(100.0, 50.0));
+        camera = Camera::new(
+            Rectangle::new(0.0, 0.0, 10.0, 10.0),
+            Point::new(100.0, 50.0),
+        );
         camera.mov(1.0, 200.0, 200.0);
         assert_eq!(100.0, camera.x());
         assert_eq!(50.0, camera.y());
-        camera = Camera::new(Rectangle::new(0.0, 0.0, 10.0, 10.0), Point::new(100.0, 50.0));
+        camera = Camera::new(
+            Rectangle::new(0.0, 0.0, 10.0, 10.0),
+            Point::new(100.0, 50.0),
+        );
         camera.mov(1.0, -10.0, 200.0);
         assert_eq!(0.0, camera.x());
         assert_eq!(50.0, camera.y());
