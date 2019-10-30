@@ -1,7 +1,7 @@
 use crate::{
     prelude::*,
     render::Image,
-    utils::{Map, Point, Camera, Rectangle},
+    utils::{Camera, Map, Point, Rectangle},
 };
 
 pub struct TileMapRenderObject;
@@ -30,12 +30,14 @@ impl RenderObject for TileMapRenderObject {
             let tile_size = map.tile_size;
 
             let start_column = (camera.x() as f32 / tile_size as f32).floor() as usize;
-            let end_column = start_column + (camera.width() as f32 / tile_size as f32).ceil() as usize;
+            let end_column =
+                start_column + (camera.width() as f32 / tile_size as f32).ceil() as usize;
             let start_row = (camera.y() as f32 / tile_size as f32).floor() as usize;
             let end_row = start_row + (camera.height() as f32 / tile_size as f32).ceil() as usize;
             let offset_x =
                 bounds.x as f32 + -camera.x() as f32 + start_column as f32 * tile_size as f32;
-            let offset_y = bounds.y as f32 + -camera.y() as f32 + start_row as f32 * tile_size as f32;
+            let offset_y =
+                bounds.y as f32 + -camera.y() as f32 + start_row as f32 * tile_size as f32;
 
             for l in 0..map.layer_count {
                 // add 1 to prevent missing tiles at the borders
@@ -69,10 +71,12 @@ impl RenderObject for TileMapRenderObject {
 
                         context.render_context_2_d().draw_image_with_clip(
                             image,
-                            tile_c as f64 * map.tile_size() as f64,
-                            tile_r as f64 * map.tile_size() as f64,
-                            map.tile_size as f64,
-                            map.tile_size as f64,
+                            Rectangle::new(
+                                tile_c as f64 * map.tile_size() as f64,
+                                tile_r as f64 * map.tile_size() as f64,
+                                map.tile_size as f64,
+                                map.tile_size as f64,
+                            ),
                             s_x as f64,
                             s_y as f64,
                         );

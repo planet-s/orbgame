@@ -178,13 +178,13 @@ dependencies = [
  "proc-macro2 1.0.6",
  "procedural-masquerade",
  "quote 1.0.2",
- "syn 1.0.5",
+ "syn 1.0.7",
 ]
 
 [[package]]
 name = "dces"
 version = "0.2.0"
-source = "git+https://gitlab.redox-os.org/redox-os/dces-rust.git#aa10849af5629e71bbb2163736bedce0cfe8d327"
+source = "git+https://gitlab.redox-os.org/redox-os/dces-rust.git#849b89f659e3488b09468ce8d49b7a74a571bc9b"
 
 [[package]]
 name = "deflate"
@@ -490,7 +490,7 @@ dependencies = [
 [[package]]
 name = "orbtk"
 version = "0.3.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f57ab8534b35008111799083d4d332654ccc562e"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#c12835e823637d7ea7fa287a7c094e822b0d03ef"
 dependencies = [
  "dces",
  "orbtk-api",
@@ -507,7 +507,7 @@ dependencies = [
 [[package]]
 name = "orbtk-api"
 version = "0.1.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f57ab8534b35008111799083d4d332654ccc562e"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#c12835e823637d7ea7fa287a7c094e822b0d03ef"
 dependencies = [
  "dces",
  "orbtk-css-engine",
@@ -521,7 +521,7 @@ dependencies = [
 [[package]]
 name = "orbtk-css-engine"
 version = "0.1.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f57ab8534b35008111799083d4d332654ccc562e"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#c12835e823637d7ea7fa287a7c094e822b0d03ef"
 dependencies = [
  "cssparser",
  "orbtk-utils",
@@ -530,16 +530,16 @@ dependencies = [
 [[package]]
 name = "orbtk-proc-macros"
 version = "0.1.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f57ab8534b35008111799083d4d332654ccc562e"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#c12835e823637d7ea7fa287a7c094e822b0d03ef"
 dependencies = [
  "quote 1.0.2",
- "syn 1.0.5",
+ "syn 1.0.7",
 ]
 
 [[package]]
 name = "orbtk-render"
 version = "0.1.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f57ab8534b35008111799083d4d332654ccc562e"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#c12835e823637d7ea7fa287a7c094e822b0d03ef"
 dependencies = [
  "image",
  "orbtk-utils",
@@ -551,7 +551,7 @@ dependencies = [
 [[package]]
 name = "orbtk-shell"
 version = "0.1.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f57ab8534b35008111799083d4d332654ccc562e"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#c12835e823637d7ea7fa287a7c094e822b0d03ef"
 dependencies = [
  "image",
  "lazy_static",
@@ -566,7 +566,7 @@ dependencies = [
 [[package]]
 name = "orbtk-theme"
 version = "0.1.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f57ab8534b35008111799083d4d332654ccc562e"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#c12835e823637d7ea7fa287a7c094e822b0d03ef"
 dependencies = [
  "lazy_static",
  "orbtk-css-engine",
@@ -575,7 +575,7 @@ dependencies = [
 [[package]]
 name = "orbtk-tree"
 version = "0.1.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f57ab8534b35008111799083d4d332654ccc562e"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#c12835e823637d7ea7fa287a7c094e822b0d03ef"
 dependencies = [
  "dces",
 ]
@@ -583,12 +583,12 @@ dependencies = [
 [[package]]
 name = "orbtk-utils"
 version = "0.1.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f57ab8534b35008111799083d4d332654ccc562e"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#c12835e823637d7ea7fa287a7c094e822b0d03ef"
 
 [[package]]
 name = "orbtk-widgets"
 version = "0.1.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f57ab8534b35008111799083d4d332654ccc562e"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#c12835e823637d7ea7fa287a7c094e822b0d03ef"
 dependencies = [
  "dces",
  "orbtk-api",
@@ -960,22 +960,22 @@ checksum = "388a1df253eca08550bef6c72392cfe7c30914bf41df5269b68cbd6ff8f570a3"
 
 [[package]]
 name = "serde"
-version = "1.0.101"
+version = "1.0.102"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9796c9b7ba2ffe7a9ce53c2287dfc48080f4b2b362fcc245a259b3a7201119dd"
+checksum = "0c4b39bd9b0b087684013a792c59e3e07a46a01d2322518d8a1104641a0b1be0"
 dependencies = [
  "serde_derive",
 ]
 
 [[package]]
 name = "serde_derive"
-version = "1.0.101"
+version = "1.0.102"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4b133a43a1ecd55d4086bd5b4dc6c1751c68b1bfbeba7a5040442022c7e7c02e"
+checksum = "ca13fc1a832f793322228923fbb3aba9f3f44444898f835d31ad1b74fa0a2bf8"
 dependencies = [
  "proc-macro2 1.0.6",
  "quote 1.0.2",
- "syn 1.0.5",
+ "syn 1.0.7",
 ]
 
 [[package]]
@@ -1046,7 +1046,7 @@ dependencies = [
  "quote 1.0.2",
  "serde",
  "serde_derive",
- "syn 1.0.5",
+ "syn 1.0.7",
 ]
 
 [[package]]
@@ -1062,7 +1062,7 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "sha1",
- "syn 1.0.5",
+ "syn 1.0.7",
 ]
 
 [[package]]
@@ -1073,9 +1073,9 @@ checksum = "213701ba3370744dcd1a12960caa4843b3d68b4d1c0a5d575e0d65b2ee9d16c0"
 
 [[package]]
 name = "sw-composite"
-version = "0.7.0"
+version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "71bd71d7772bdbb7e5fbe37f767c5b2506bd23e72c12186a63f78c0980f64e9b"
+checksum = "26278512d0de15b0578a75cb45f98ab39dfee7877151e5cb0d08e4e29898f7d5"
 
 [[package]]
 name = "syn"
@@ -1101,9 +1101,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "1.0.5"
+version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "66850e97125af79138385e9b88339cbcd037e3f28ceab8c5ad98e64f0f1f80bf"
+checksum = "0e7bedb3320d0f3035594b0b723c8a28d7d336a3eda3881db79e61d676fb644c"
 dependencies = [
  "proc-macro2 1.0.6",
  "quote 1.0.2",
@@ -1177,9 +1177,9 @@ checksum = "826e7639553986605ec5979c7dd957c7895e93eabed50ab2ffa7f6128a75097c"
 
 [[package]]
 name = "wasm-bindgen"
-version = "0.2.52"
+version = "0.2.53"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "637353fd57864c20f1968dc21680fe03985ca3a7ef6a5ce027777513bdecc282"
+checksum = "4c29d57d5c3b3bc53bbe35c5a4f4a0df994d870b7d3cb0ad1c2065e21822ae41"
 dependencies = [
  "cfg-if",
  "wasm-bindgen-macro",
@@ -1187,24 +1187,24 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-backend"
-version = "0.2.52"
+version = "0.2.53"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c85481ca7d1aad8cf40e0140830b2197ce89184a80e54e307b55fd64d78ed63e"
+checksum = "aa2868fa93e5bf36a9364d1277a0f97392748a8217d9aa0ec3f1cdbdf7ad1a60"
 dependencies = [
  "bumpalo",
  "lazy_static",
  "log",
  "proc-macro2 1.0.6",
  "quote 1.0.2",
- "syn 1.0.5",
+ "syn 1.0.7",
  "wasm-bindgen-shared",
 ]
 
 [[package]]
 name = "wasm-bindgen-macro"
-version = "0.2.52"
+version = "0.2.53"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f627667b5f4f8bd923c93107b96907c60e7e8eb2636802499fce468c87e3689"
+checksum = "41e80594782a241bf3d92ee5d1247b8fb496250a8a2ff1e136942d433fbbce14"
 dependencies = [
  "quote 1.0.2",
  "wasm-bindgen-macro-support",
@@ -1212,22 +1212,22 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-macro-support"
-version = "0.2.52"
+version = "0.2.53"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a48f5147b0c049bc306d5b9e53c891056a1fd8c4e7311fffbce233e4f200d45e"
+checksum = "74b9950355b1d92ca09de0984bdd4de7edda5e8af12daf0c052a0a075e8c9157"
 dependencies = [
  "proc-macro2 1.0.6",
  "quote 1.0.2",
- "syn 1.0.5",
+ "syn 1.0.7",
  "wasm-bindgen-backend",
  "wasm-bindgen-shared",
 ]
 
 [[package]]
 name = "wasm-bindgen-shared"
-version = "0.2.52"
+version = "0.2.53"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e272b0d31b78cdcaf5ad440d28276546d99b059a953e5afb387aefce66c3c5a"
+checksum = "7493fe67ad99672ef3de3e6ba513fb03db276358c8cc9588ce5a008c6e48ad68"
 
 [[package]]
 name = "winapi"
