@@ -22,6 +22,9 @@ path = "src/lib.rs"
 [profile.dev]
 opt-level = 1
 
+[features]
+debug = ["orbtk/debug"]
+
 [dependencies]
 orbgame-api = { version = "0.1.0", path = "crates/api" }
 orbgame-utils = { version = "0.1.0", path = "crates/utils" }

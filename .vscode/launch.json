@@ -7,7 +7,7 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug dungeon",
+            "name": "Dungeon",
             "program": "${workspaceFolder}/target/debug/examples/dungeon",
             "cwd": "${workspaceFolder}",
             "preLaunchTask": "build dungeon",
@@ -18,7 +18,18 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug minimal",
+            "name": "Dungeon debug",
+            "program": "${workspaceFolder}/target/debug/examples/dungeon",
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "build debug",
+            "sourceLanguages": [
+                "rust"
+            ]
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Minimal",
             "program": "${workspaceFolder}/target/debug/examples/minimal",
             "cwd": "${workspaceFolder}",
             "preLaunchTask": "build minimal",

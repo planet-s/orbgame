@@ -21,6 +21,25 @@
             }
         },
         {
+            "label": "build debug",
+            "command": "cargo",
+            "type": "shell",
+            "args": [
+                "build",
+                "--examples=dungeon",
+                "--features",
+                "debug"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
             "label": "build minimal",
             "command": "cargo",
             "type": "shell",
