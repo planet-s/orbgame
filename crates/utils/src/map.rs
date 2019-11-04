@@ -102,6 +102,7 @@ impl Map {
     }
 }
 
+// todo return with result!
 impl From<&str> for Map {
     fn from(s: &str) -> Self {
         if let Ok(file) = &mut File::open(s) {
