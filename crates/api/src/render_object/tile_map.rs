@@ -74,8 +74,8 @@ impl RenderObject for TileMapRenderObject {
                         context.render_context_2_d().draw_image_with_clip(
                             image,
                             Rectangle::new(
-                                tile_c as f64 * map.tile_size() as f64,
-                                tile_r as f64 * map.tile_size() as f64,
+                                bounds.x + tile_c as f64 * map.tile_size() as f64,
+                                bounds.y + tile_r as f64 * map.tile_size() as f64,
                                 map.tile_size as f64,
                                 map.tile_size as f64,
                             ),
