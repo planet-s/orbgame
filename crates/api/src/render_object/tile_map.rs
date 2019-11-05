@@ -1,5 +1,3 @@
-use std::f32;
-
 use crate::{
     prelude::*,
     render::Image,
@@ -36,10 +34,10 @@ impl RenderObject for TileMapRenderObject {
                 start_column + (camera.width() as f32 / tile_size as f32).ceil() as usize;
             let start_row = (camera.y() as f32 / tile_size as f32).floor() as usize;
             let end_row = start_row + (camera.height() as f32 / tile_size as f32).ceil() as usize;
-            let offset_x = (start_column as f32)
-                .mul_add(tile_size as f32, bounds.x as f32 + -camera.x() as f32);
+            let offset_x =
+                bounds.x as f32 + -camera.x() as f32 + start_column as f32 * tile_size as f32;
             let offset_y =
-                (start_row as f32).mul_add(tile_size as f32, bounds.y as f32 + -camera.y() as f32);
+                bounds.y as f32 + -camera.y() as f32 + start_row as f32 * tile_size as f32;
 
             for l in 0..map.layer_count {
                 // add 1 to prevent missing tiles at the borders
@@ -66,10 +64,10 @@ impl RenderObject for TileMapRenderObject {
                         let tile_c = tile as f32 % tile_column_count as f32;
                         let tile_r = (tile as f32 / tile_column_count as f32).floor();
 
-                        let s_x = ((c - start_column) as f32)
-                            .mul_add(map.tile_size as f32, offset_x as f32);
-                        let s_y =
-                            ((r - start_row) as f32).mul_add(map.tile_size as f32, offset_y as f32);
+                        let s_x = (((c - start_column) as f32) * map.tile_size as f32
+                            + offset_x as f32) as i32;
+                        let s_y = (((r - start_row) as f32) * map.tile_size as f32
+                            + offset_y as f32) as i32;
 
                         context.render_context_2_d().draw_image_with_clip(
                             image,
@@ -79,8 +77,8 @@ impl RenderObject for TileMapRenderObject {
                                 map.tile_size as f64,
                                 map.tile_size as f64,
                             ),
-                            bounds.x + s_x as f64,
-                            bounds.y + s_y as f64,
+                            s_x as f64,
+                            s_y as f64,
                         );
                     }
                 }
