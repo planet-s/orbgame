@@ -1,11 +1,11 @@
 use std::{fs::File, io::prelude::*};
 
-use ron::de::from_str;
-use serde_derive::Deserialize;
+use ron::{de::from_str, ser::to_string};
+use serde_derive::{Serialize, Deserialize};
 
 use orbtk::prelude::*;
 
-#[derive(Default, Clone, Debug, PartialEq, Deserialize)]
+#[derive(Default, Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Layer {
     pub tiles: Vec<i32>,
 }
@@ -22,7 +22,7 @@ impl Layer {
     }
 }
 
-#[derive(Default, Clone, Debug, PartialEq, Deserialize)]
+#[derive(Default, Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Map {
     pub layer_count: usize,
     pub row_count: usize,
@@ -99,6 +99,10 @@ impl Map {
         let row = (y / self.tile_size as f32).floor() as usize;
 
         self.is_blocked(column, row)
+    }
+
+    pub fn to_string(&self) -> String {
+        to_string(self).unwrap()
     }
 }
 
