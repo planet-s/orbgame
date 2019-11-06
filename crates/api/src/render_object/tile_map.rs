@@ -62,8 +62,6 @@ impl RenderObject for TileMapRenderObject {
 
         if let Some(image) = &mut image {
             // draw the tile map
-            let mut render_target = RenderTarget::new(bounds.width() as u32, bounds.height as u32);
-
             let tile_size = map.tile_size;
 
             let start_column = (camera.x() as f32 / tile_size as f32).floor() as usize;
@@ -75,6 +73,9 @@ impl RenderObject for TileMapRenderObject {
             let offset_y = -camera.y() as f32 + start_row as f32 * tile_size as f32;
 
             for l in 0..map.layer_count {
+                let mut render_target =
+                    RenderTarget::new(bounds.width() as u32, bounds.height as u32);
+
                 // add 1 to prevent missing tiles at the borders
                 let mut end_column = end_column + 1;
                 let mut end_row = end_row + 1;
@@ -118,11 +119,13 @@ impl RenderObject for TileMapRenderObject {
                         );
                     }
                 }
-            }
 
-            context
-                .render_context_2_d()
-                .draw_render_target(&render_target, bounds.x(), bounds.y());
+                context.render_context_2_d().draw_render_target(
+                    &render_target,
+                    bounds.x(),
+                    bounds.y(),
+                );
+            }
         }
     }
 }
