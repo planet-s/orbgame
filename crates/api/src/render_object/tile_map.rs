@@ -56,6 +56,10 @@ impl RenderObject for TileMapRenderObject {
             )
         };
 
+        if bounds.width() == 0.0 || bounds.height() == 0.0 {
+            return;
+        }
+
         if let Some(image) = &mut image {
             // draw the tile map
             let mut render_target = RenderTarget::new(bounds.width() as u32, bounds.height as u32);
