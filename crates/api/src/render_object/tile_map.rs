@@ -60,9 +60,6 @@ impl RenderObject for TileMapRenderObject {
 
         if let Some(image) = &mut image {
             // draw the tile map
-
-            // let render_target = RenderTarget::new(bounds.width as u32, bounds.height as u32);
-            // render_target.data_mut() = [(bounds.width * bounds.height) as usize, 0];
             let mut render_target = RenderTarget::new(bounds.width() as u32, bounds.height as u32);
 
             let tile_size = map.tile_size;
@@ -119,18 +116,6 @@ impl RenderObject for TileMapRenderObject {
                             s_x as f64,
                             s_y as f64,
                         );
-
-                        // context.render_context_2_d().draw_image_with_clip(
-                        // image,
-                        // Rectangle::new(
-                        //     tile_c as f64 * map.tile_size() as f64,
-                        //     tile_r as f64 * map.tile_size() as f64,
-                        //     map.tile_size as f64,
-                        //     map.tile_size as f64,
-                        // ),
-                        // s_x as f64,
-                        // s_y as f64,
-                        // );
                     }
                 }
             }
