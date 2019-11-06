@@ -3,7 +3,7 @@ use std::cmp;
 use crate::{
     prelude::*,
     render::{Image, RenderTarget},
-    utils::{Camera, Color, Map, Point, Rectangle},
+    utils::{Camera, Map, Point, Rectangle},
 };
 
 pub struct TileMapRenderObject;
@@ -25,14 +25,12 @@ impl TileMapRenderObject {
             image.data().len(),
         );
 
-
         while offset < last_offset {
             let next_offset = offset + stride as usize;
 
             for i in 0..clip.width as usize {
                 let index = (x as f64 + y as f64 * render_target.width()).floor() as usize + i;
                 render_target.data_mut()[index] = image.data()[offset + i];
-
             }
             offset = next_offset;
             y += 1;
@@ -69,10 +67,8 @@ impl RenderObject for TileMapRenderObject {
                 start_column + (camera.width() as f32 / tile_size as f32).ceil() as usize;
             let start_row = (camera.y() as f32 / tile_size as f32).floor() as usize;
             let end_row = start_row + (camera.height() as f32 / tile_size as f32).ceil() as usize;
-            let offset_x =
-                bounds.x as f32 + -camera.x() as f32 + start_column as f32 * tile_size as f32;
-            let offset_y =
-                bounds.y as f32 + -camera.y() as f32 + start_row as f32 * tile_size as f32;
+            let offset_x = -camera.x() as f32 + start_column as f32 * tile_size as f32;
+            let offset_y = -camera.y() as f32 + start_row as f32 * tile_size as f32;
 
             for l in 0..map.layer_count {
                 // add 1 to prevent missing tiles at the borders
