@@ -1,10 +1,44 @@
+use std::cmp;
+
 use crate::{
     prelude::*,
-    render::Image,
-    utils::{Camera, Map, Point, Rectangle},
+    render::{Image, RenderTarget},
+    utils::{Camera, Color, Map, Point, Rectangle},
 };
 
 pub struct TileMapRenderObject;
+
+impl TileMapRenderObject {
+    fn draw_render_target(
+        &self,
+        render_target: &mut RenderTarget,
+        image: &Image,
+        clip: Rectangle,
+        x: f64,
+        y: f64,
+    ) {
+        let mut y = y as i32;
+        let stride = image.width();
+        let mut offset = clip.y.mul_add(stride, clip.x) as usize;
+        let last_offset = cmp::min(
+            ((clip.y + clip.height).mul_add(stride, clip.x)) as usize,
+            image.data().len(),
+        );
+
+
+        while offset < last_offset {
+            let next_offset = offset + stride as usize;
+
+            for i in 0..clip.width as usize {
+                let index = (x as f64 + y as f64 * render_target.width()).floor() as usize + i;
+                render_target.data_mut()[index] = image.data()[offset + i];
+
+            }
+            offset = next_offset;
+            y += 1;
+        }
+    }
+}
 
 impl Into<Box<dyn RenderObject>> for TileMapRenderObject {
     fn into(self) -> Box<dyn RenderObject> {
@@ -26,6 +60,10 @@ impl RenderObject for TileMapRenderObject {
 
         if let Some(image) = &mut image {
             // draw the tile map
+
+            // let render_target = RenderTarget::new(bounds.width as u32, bounds.height as u32);
+            // render_target.data_mut() = [(bounds.width * bounds.height) as usize, 0];
+            let mut render_target = RenderTarget::new(bounds.width() as u32, bounds.height as u32);
 
             let tile_size = map.tile_size;
 
@@ -69,7 +107,8 @@ impl RenderObject for TileMapRenderObject {
                         let s_y = (((r - start_row) as f32) * map.tile_size as f32
                             + offset_y as f32) as i32;
 
-                        context.render_context_2_d().draw_image_with_clip(
+                        self.draw_render_target(
+                            &mut render_target,
                             image,
                             Rectangle::new(
                                 tile_c as f64 * map.tile_size() as f64,
@@ -80,9 +119,25 @@ impl RenderObject for TileMapRenderObject {
                             s_x as f64,
                             s_y as f64,
                         );
+
+                        // context.render_context_2_d().draw_image_with_clip(
+                        // image,
+                        // Rectangle::new(
+                        //     tile_c as f64 * map.tile_size() as f64,
+                        //     tile_r as f64 * map.tile_size() as f64,
+                        //     map.tile_size as f64,
+                        //     map.tile_size as f64,
+                        // ),
+                        // s_x as f64,
+                        // s_y as f64,
+                        // );
                     }
                 }
             }
+
+            context
+                .render_context_2_d()
+                .draw_render_target(&render_target, bounds.x(), bounds.y());
         }
     }
 }
