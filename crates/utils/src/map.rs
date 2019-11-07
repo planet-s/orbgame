@@ -112,6 +112,7 @@ impl From<&str> for Map {
         if let Ok(file) = &mut File::open(s) {
             let mut contents = String::new();
             file.read_to_string(&mut contents).unwrap();
+            file.sync_all().unwrap();
             let map: Map = match from_str(contents.as_str()) {
                 Ok(x) => x,
                 Err(e) => {
