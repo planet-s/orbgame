@@ -1,6 +1,6 @@
 use std::{fs::File, io::prelude::*};
 
-use ron::{de::from_str, ser::to_string};
+use ron::{de::from_str, ser::{to_string_pretty, PrettyConfig}};
 use serde_derive::{Serialize, Deserialize};
 
 use orbtk::prelude::*;
@@ -102,7 +102,7 @@ impl Map {
     }
 
     pub fn to_string(&self) -> String {
-        to_string(self).unwrap()
+        to_string_pretty(self, PrettyConfig::default()).unwrap()
     }
 }
 
