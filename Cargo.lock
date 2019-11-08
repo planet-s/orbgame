@@ -113,23 +113,23 @@ dependencies = [
 
 [[package]]
 name = "crossbeam-deque"
-version = "0.7.1"
+version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b18cd2e169ad86297e6bc0ad9aa679aee9daa4f19e8163860faf7c164e4f5a71"
+checksum = "c3aa945d63861bfe624b55d153a39684da1e8c0bc8fba932f7ee3a3c16cea3ca"
 dependencies = [
  "crossbeam-epoch",
- "crossbeam-utils",
+ "crossbeam-utils 0.7.0",
 ]
 
 [[package]]
 name = "crossbeam-epoch"
-version = "0.7.2"
+version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fedcd6772e37f3da2a9af9bf12ebe046c0dfe657992377b4df982a2b54cd37a9"
+checksum = "5064ebdbf05ce3cb95e45c8b086f72263f4166b29b97f6baff7ef7fe047b55ac"
 dependencies = [
- "arrayvec 0.4.12",
+ "autocfg",
  "cfg-if",
- "crossbeam-utils",
+ "crossbeam-utils 0.7.0",
  "lazy_static",
  "memoffset",
  "scopeguard",
@@ -141,7 +141,7 @@ version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7c979cd6cfe72335896575c6b5688da489e420d36a27a0b9eb0c73db574b4a4b"
 dependencies = [
- "crossbeam-utils",
+ "crossbeam-utils 0.6.6",
 ]
 
 [[package]]
@@ -150,6 +150,17 @@ version = "0.6.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "04973fa96e96579258a5091af6003abde64af786b860f18622b82e026cca60e6"
 dependencies = [
+ "cfg-if",
+ "lazy_static",
+]
+
+[[package]]
+name = "crossbeam-utils"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ce446db02cdc3165b94ae73111e570793400d0794e46125cc4056c81cbb039f4"
+dependencies = [
+ "autocfg",
  "cfg-if",
  "lazy_static",
 ]
@@ -336,9 +347,9 @@ checksum = "60302e4db3a61da70c0cb7991976248362f30319e88850c487b9b95bbf059e00"
 
 [[package]]
 name = "memoffset"
-version = "0.5.2"
+version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4a85c1a8c329f11437034d7313dca647c79096523533a1c79e86f1d0f657c7cc"
+checksum = "75189eb85871ea5c2e2c15abbdd541185f63b408415e5051f5cac122d8c774b9"
 dependencies = [
  "rustc_version",
 ]
@@ -500,7 +511,7 @@ dependencies = [
 [[package]]
 name = "orbtk"
 version = "0.3.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#843316724d19e72fc2b4bb4a8d184ec0c3479300"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f501f3b93650fe0d1bb488defe3d32ac267b3225"
 dependencies = [
  "dces",
  "orbtk-api",
@@ -517,7 +528,7 @@ dependencies = [
 [[package]]
 name = "orbtk-api"
 version = "0.1.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#843316724d19e72fc2b4bb4a8d184ec0c3479300"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f501f3b93650fe0d1bb488defe3d32ac267b3225"
 dependencies = [
  "dces",
  "orbtk-css-engine",
@@ -531,7 +542,7 @@ dependencies = [
 [[package]]
 name = "orbtk-css-engine"
 version = "0.1.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#843316724d19e72fc2b4bb4a8d184ec0c3479300"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f501f3b93650fe0d1bb488defe3d32ac267b3225"
 dependencies = [
  "cssparser",
  "orbtk-utils",
@@ -540,7 +551,7 @@ dependencies = [
 [[package]]
 name = "orbtk-proc-macros"
 version = "0.1.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#843316724d19e72fc2b4bb4a8d184ec0c3479300"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f501f3b93650fe0d1bb488defe3d32ac267b3225"
 dependencies = [
  "quote 1.0.2",
  "syn 1.0.7",
@@ -549,7 +560,7 @@ dependencies = [
 [[package]]
 name = "orbtk-render"
 version = "0.1.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#843316724d19e72fc2b4bb4a8d184ec0c3479300"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f501f3b93650fe0d1bb488defe3d32ac267b3225"
 dependencies = [
  "image",
  "orbtk-utils",
@@ -561,7 +572,7 @@ dependencies = [
 [[package]]
 name = "orbtk-shell"
 version = "0.1.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#843316724d19e72fc2b4bb4a8d184ec0c3479300"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f501f3b93650fe0d1bb488defe3d32ac267b3225"
 dependencies = [
  "image",
  "lazy_static",
@@ -576,7 +587,7 @@ dependencies = [
 [[package]]
 name = "orbtk-theme"
 version = "0.1.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#843316724d19e72fc2b4bb4a8d184ec0c3479300"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f501f3b93650fe0d1bb488defe3d32ac267b3225"
 dependencies = [
  "lazy_static",
  "orbtk-css-engine",
@@ -585,7 +596,7 @@ dependencies = [
 [[package]]
 name = "orbtk-tree"
 version = "0.1.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#843316724d19e72fc2b4bb4a8d184ec0c3479300"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f501f3b93650fe0d1bb488defe3d32ac267b3225"
 dependencies = [
  "dces",
 ]
@@ -593,12 +604,12 @@ dependencies = [
 [[package]]
 name = "orbtk-utils"
 version = "0.1.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#843316724d19e72fc2b4bb4a8d184ec0c3479300"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f501f3b93650fe0d1bb488defe3d32ac267b3225"
 
 [[package]]
 name = "orbtk-widgets"
 version = "0.1.0"
-source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#843316724d19e72fc2b4bb4a8d184ec0c3479300"
+source = "git+https://gitlab.redox-os.org/redox-os/orbtk.git#f501f3b93650fe0d1bb488defe3d32ac267b3225"
 dependencies = [
  "dces",
  "orbtk-api",
@@ -859,7 +870,7 @@ checksum = "98dcf634205083b17d0861252431eb2acbfb698ab7478a2d20de07954f47ec7b"
 dependencies = [
  "crossbeam-deque",
  "crossbeam-queue",
- "crossbeam-utils",
+ "crossbeam-utils 0.6.6",
  "lazy_static",
  "num_cpus",
 ]
@@ -1083,9 +1094,9 @@ checksum = "213701ba3370744dcd1a12960caa4843b3d68b4d1c0a5d575e0d65b2ee9d16c0"
 
 [[package]]
 name = "sw-composite"
-version = "0.7.1"
+version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "26278512d0de15b0578a75cb45f98ab39dfee7877151e5cb0d08e4e29898f7d5"
+checksum = "50a36f1738c7e57fec506df8c94719b2210816ab9de4d3dadeb9efb6bc71f1d2"
 
 [[package]]
 name = "syn"
@@ -1187,9 +1198,9 @@ checksum = "826e7639553986605ec5979c7dd957c7895e93eabed50ab2ffa7f6128a75097c"
 
 [[package]]
 name = "wasm-bindgen"
-version = "0.2.53"
+version = "0.2.54"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4c29d57d5c3b3bc53bbe35c5a4f4a0df994d870b7d3cb0ad1c2065e21822ae41"
+checksum = "c4568ae1b4e07ca907b1a4de41174eaa3e5be4066c024475586b7842725f69a9"
 dependencies = [
  "cfg-if",
  "wasm-bindgen-macro",
@@ -1197,9 +1208,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-backend"
-version = "0.2.53"
+version = "0.2.54"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aa2868fa93e5bf36a9364d1277a0f97392748a8217d9aa0ec3f1cdbdf7ad1a60"
+checksum = "5a00cfdce37367770062065fd3abb9278cbae86a0d918cacd0978a7acd51b481"
 dependencies = [
  "bumpalo",
  "lazy_static",
@@ -1212,9 +1223,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-macro"
-version = "0.2.53"
+version = "0.2.54"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "41e80594782a241bf3d92ee5d1247b8fb496250a8a2ff1e136942d433fbbce14"
+checksum = "7c568f4d3cf6d7c1d72b165daf778fb0d6e09a24f96ac14fc8c4f66a96e86b72"
 dependencies = [
  "quote 1.0.2",
  "wasm-bindgen-macro-support",
@@ -1222,9 +1233,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-macro-support"
-version = "0.2.53"
+version = "0.2.54"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "74b9950355b1d92ca09de0984bdd4de7edda5e8af12daf0c052a0a075e8c9157"
+checksum = "430d12539ae324d16097b399e9d07a6d5ce0173b2a61a2d02346ca7c198daffe"
 dependencies = [
  "proc-macro2 1.0.6",
  "quote 1.0.2",
@@ -1235,9 +1246,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-shared"
-version = "0.2.53"
+version = "0.2.54"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7493fe67ad99672ef3de3e6ba513fb03db276358c8cc9588ce5a008c6e48ad68"
+checksum = "8ae7167f0bbffd7fac2b12da0fa1f834c1d84671a1ae3c93ac8bde2e97179c39"
 
 [[package]]
 name = "winapi"
