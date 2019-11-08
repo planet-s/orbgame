@@ -117,33 +117,31 @@ impl Map {
     }
 
     pub fn set_column_count(&mut self, column_count: usize) {
-        if self.column_count < column_count {
-            let offset = column_count - self.column_count;
-         
-
-            for o in 0..offset {
-                for r in (0..self.row_count).rev() {
+        if self.column_count > column_count {
+            let offset = self.column_count - column_count;
+            for r in (0..self.row_count).rev() {
+                for o in 0..offset {
                     for l in 0..self.layer_count {
                         if let Some(layer) = self.layers.get_mut(l) {
-                            layer.remove(self.column_count - o + r * self.column_count);
+                            layer.remove(self.column_count - o - 1 + r * self.column_count);
                         }
                     }
                 }
             }
         }
 
-        if self.column_count > column_count {
-            let offset = self.column_count - column_count;
+        if self.column_count < column_count {
+            let offset = column_count - self.column_count;
 
-            // for _ in 0..offset {
-            //     for l in 0..self.layer_count {
-            //         for _ in 0..self.column_count {
-            //             if let Some(layer) = self.layers.get_mut(l) {
-            //                 layer.push(-1);
-            //             }
-            //         }
-            //     }
-            // }
+            for r in 0..self.row_count {
+                for o in 0..offset {
+                    for l in 0..self.layer_count {
+                        if let Some(layer) = self.layers.get_mut(l) {
+                            layer.tiles.insert(self.column_count + o + r * column_count, -1);
+                        }
+                    }
+                }
+            }
         }
 
         self.column_count = column_count;
