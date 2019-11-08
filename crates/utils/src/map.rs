@@ -125,7 +125,7 @@ impl Map {
                 for r in (0..self.row_count).rev() {
                     for l in 0..self.layer_count {
                         if let Some(layer) = self.layers.get_mut(l) {
-                            layer.remove(self.column_count - o * r * self.column_count);
+                            layer.remove(self.column_count - o + r * self.column_count);
                         }
                     }
                 }
