@@ -17,10 +17,9 @@ impl Layer {
     pub fn push(&mut self, tile: i32) {
         self.tiles.push(tile);
     }
-    
     pub fn pop(&mut self) -> Option<i32> {
         self.tiles.pop()
-    } 
+    }
 
     pub fn set_tile(&mut self, index: usize, tile: i32) {
         if let Some(t) = self.tiles.get_mut(index) {
@@ -79,7 +78,7 @@ impl Map {
 
     pub fn set_row_count(&mut self, row_count: usize) {
         if self.row_count < row_count {
-            let offset = self.row_count - row_count;
+            let offset = row_count - self.row_count;
 
             for _ in 0..offset {
                 for l in 0..self.layer_count {
@@ -92,8 +91,8 @@ impl Map {
             }
         }
 
-         if self.row_count > row_count {
-            let offset = row_count - self.row_count;
+        if self.row_count > row_count {
+            let offset = self.row_count - row_count;
 
             for _ in 0..offset {
                 for l in 0..self.layer_count {
@@ -128,7 +127,7 @@ impl Map {
             // }
         }
 
-         if self.column_count > column_count {
+        if self.column_count > column_count {
             let offset = column_count - self.column_count;
 
             // for _ in 0..offset {
