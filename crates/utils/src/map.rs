@@ -1,7 +1,10 @@
 use std::{fs::File, io::prelude::*};
 
-use ron::{de::from_str, ser::{to_string_pretty, PrettyConfig}};
-use serde_derive::{Serialize, Deserialize};
+use ron::{
+    de::from_str,
+    ser::{to_string_pretty, PrettyConfig},
+};
+use serde_derive::{Deserialize, Serialize};
 
 use orbtk::prelude::*;
 
@@ -14,6 +17,10 @@ impl Layer {
     pub fn push(&mut self, tile: i32) {
         self.tiles.push(tile);
     }
+    
+    pub fn pop(&mut self) -> Option<i32> {
+        self.tiles.pop()
+    } 
 
     pub fn set_tile(&mut self, index: usize, tile: i32) {
         if let Some(t) = self.tiles.get_mut(index) {
@@ -39,12 +46,103 @@ impl Map {
         self.layer_count
     }
 
+    /// Sets the layer count.
+    pub fn set_layer_count(&mut self, layer_count: usize) {
+        // add new layers
+        if self.layer_count < layer_count {
+            for _ in 0..(layer_count - self.layer_count) {
+                let mut layer = Layer::default();
+
+                for _ in 0..self.row_count {
+                    for _ in 0..self.column_count {
+                        layer.push(-1);
+                    }
+                }
+
+                self.layers.push(layer);
+            }
+        }
+
+        // remove layers
+        if self.layer_count > layer_count {
+            for _ in 0..(self.layer_count - layer_count) {
+                self.layers.pop().unwrap();
+            }
+        }
+
+        self.layer_count = layer_count;
+    }
+
     pub fn row_count(&self) -> usize {
         self.row_count
     }
 
+    pub fn set_row_count(&mut self, row_count: usize) {
+        if self.row_count < row_count {
+            let offset = self.row_count - row_count;
+
+            for _ in 0..offset {
+                for l in 0..self.layer_count {
+                    for _ in 0..self.column_count {
+                        if let Some(layer) = self.layers.get_mut(l) {
+                            layer.push(-1);
+                        }
+                    }
+                }
+            }
+        }
+
+         if self.row_count > row_count {
+            let offset = row_count - self.row_count;
+
+            for _ in 0..offset {
+                for l in 0..self.layer_count {
+                    for _ in 0..self.column_count {
+                        if let Some(layer) = self.layers.get_mut(l) {
+                            layer.pop().unwrap();
+                        }
+                    }
+                }
+            }
+        }
+
+        self.row_count = row_count;
+    }
+
     pub fn column_count(&self) -> usize {
         self.column_count
+    }
+
+    pub fn set_column_count(&mut self, column_count: usize) {
+        if self.column_count < column_count {
+            let offset = self.column_count - column_count;
+
+            // for _ in 0..offset {
+            //     for l in 0..self.layer_count {
+            //         for _ in 0..self.column_count {
+            //             if let Some(layer) = self.layers.get_mut(l) {
+            //                 layer.push(-1);
+            //             }
+            //         }
+            //     }
+            // }
+        }
+
+         if self.column_count > column_count {
+            let offset = column_count - self.column_count;
+
+            // for _ in 0..offset {
+            //     for l in 0..self.layer_count {
+            //         for _ in 0..self.column_count {
+            //             if let Some(layer) = self.layers.get_mut(l) {
+            //                 layer.push(-1);
+            //             }
+            //         }
+            //     }
+            // }
+        }
+
+        self.column_count = column_count;
     }
 
     pub fn tile_size(&self) -> u32 {
