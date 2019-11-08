@@ -21,6 +21,10 @@ impl Layer {
         self.tiles.pop()
     }
 
+    pub fn remove(&mut self, index: usize) -> i32 {
+        self.tiles.remove(index)
+    }
+
     pub fn set_tile(&mut self, index: usize, tile: i32) {
         if let Some(t) = self.tiles.get_mut(index) {
             *t = tile;
@@ -114,21 +118,22 @@ impl Map {
 
     pub fn set_column_count(&mut self, column_count: usize) {
         if self.column_count < column_count {
-            let offset = self.column_count - column_count;
+            let offset = column_count - self.column_count;
+         
 
-            // for _ in 0..offset {
-            //     for l in 0..self.layer_count {
-            //         for _ in 0..self.column_count {
-            //             if let Some(layer) = self.layers.get_mut(l) {
-            //                 layer.push(-1);
-            //             }
-            //         }
-            //     }
-            // }
+            for o in 0..offset {
+                for r in (0..self.row_count).rev() {
+                    for l in 0..self.layer_count {
+                        if let Some(layer) = self.layers.get_mut(l) {
+                            layer.remove(self.column_count - o * r * self.column_count);
+                        }
+                    }
+                }
+            }
         }
 
         if self.column_count > column_count {
-            let offset = column_count - self.column_count;
+            let offset = self.column_count - column_count;
 
             // for _ in 0..offset {
             //     for l in 0..self.layer_count {
