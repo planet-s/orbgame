@@ -246,19 +246,15 @@ impl State for GameViewState {
         if let Some(event) = self.event.get() {
             match event {
                 GameEvent::OpenMenu => {
-                    ctx.child_by_id("map_view")
-                        .unwrap()
+                    ctx.child("map_view")
                         .set("visibility", Visibility::from("collapsed"));
-                    ctx.child_by_id("menu_view")
-                        .unwrap()
+                    ctx.child("menu_view")
                         .set("visibility", Visibility::from("visible"));
                 }
                 GameEvent::StartGame => {
-                    ctx.child_by_id("menu_view")
-                        .unwrap()
+                    ctx.child("menu_view")
                         .set("visibility", Visibility::from("collapsed"));
-                    ctx.child_by_id("map_view")
-                        .unwrap()
+                    ctx.child("map_view")
                         .set("visibility", Visibility::from("visible"));
                 }
                 GameEvent::Quit => {
