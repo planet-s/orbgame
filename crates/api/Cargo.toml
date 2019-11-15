@@ -10,5 +10,5 @@ edition = "2018"
 
 [dependencies]
 dces = { git = "https://gitlab.redox-os.org/redox-os/dces-rust.git" }
-orbtk = { git = "https://gitlab.redox-os.org/redox-os/orbtk.git" }
+orbtk = { git = "https://gitlab.redox-os.org/redox-os/orbtk.git", branch = "develop" }
 orbgame-utils = { version = "0.1.0", path = "../utils" }
