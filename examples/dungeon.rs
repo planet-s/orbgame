@@ -30,12 +30,12 @@ impl MapViewState {
 }
 
 impl State for MapViewState {
-    fn init(&self, ctx: &mut Context<'_>) {
+    fn init(&self, _: &mut Registry, ctx: &mut Context<'_>) {
         // workaround
         ctx.window().get_mut::<Global>("global").focused_widget = Some(ctx.entity);
     }
 
-    fn update(&self, ctx: &mut Context<'_>) {
+    fn update(&self, _: &mut Registry, ctx: &mut Context<'_>) {
         if let Some(action) = self.action.get() {
             if let Some(window_id) = ctx.parent_entity_by_element("window") {
                 match action {
@@ -118,7 +118,7 @@ impl MenuViewState {
 }
 
 impl State for MenuViewState {
-    fn update(&self, ctx: &mut Context<'_>) {
+    fn update(&self, _: &mut Registry, ctx: &mut Context<'_>) {
         if let Some(action) = self.action.get() {
             if let Some(window_id) = ctx.parent_entity_by_element("window") {
                 match action {
@@ -242,7 +242,7 @@ impl GameViewState {
 }
 
 impl State for GameViewState {
-    fn update(&self, ctx: &mut Context<'_>) {
+    fn update(&self, _: &mut Registry, ctx: &mut Context<'_>) {
         if let Some(event) = self.event.get() {
             match event {
                 GameEvent::OpenMenu => {
