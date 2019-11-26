@@ -137,7 +137,9 @@ impl Map {
                 for o in 0..offset {
                     for l in 0..self.layer_count {
                         if let Some(layer) = self.layers.get_mut(l) {
-                            layer.tiles.insert(self.column_count + o + r * column_count, -1);
+                            layer
+                                .tiles
+                                .insert(self.column_count + o + r * column_count, -1);
                         }
                     }
                 }

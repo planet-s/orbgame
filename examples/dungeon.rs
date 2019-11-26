@@ -1,7 +1,7 @@
+use orbgame::prelude::*;
 use orbgame::theme::DEFAULT_THEME_CSS;
-use orbgame::{prelude::*, shell::KeyEvent};
 use std::{
-    cell::{Cell, RefCell},
+    cell::RefCell,
     rc::Rc,
 };
 
@@ -18,25 +18,25 @@ pub enum MapViewAction {
     OpenMenu,
 }
 
-#[derive(Default, Clone)]
+#[derive(AsAny, Default, Clone)]
 pub struct MapViewState {
-    action: Cell<Option<MapViewAction>>,
+    action: Option<MapViewAction>,
 }
 
 impl MapViewState {
-    fn action(&self, action: MapViewAction) {
-        self.action.set(Some(action));
+    fn action(&mut self, action: MapViewAction) {
+        self.action = Some(action);
     }
 }
 
 impl State for MapViewState {
-    fn init(&self, _: &mut Registry, ctx: &mut Context<'_>) {
+    fn init(&mut self, _: &mut Registry, ctx: &mut Context<'_>) {
         // workaround
         ctx.window().get_mut::<Global>("global").focused_widget = Some(ctx.entity);
     }
 
-    fn update(&self, _: &mut Registry, ctx: &mut Context<'_>) {
-        if let Some(action) = self.action.get() {
+    fn update(&mut self, _: &mut Registry, ctx: &mut Context<'_>) {
+        if let Some(action) = self.action {
             if let Some(window_id) = ctx.parent_entity_by_element("window") {
                 match action {
                     MapViewAction::OpenMenu => {
@@ -45,7 +45,7 @@ impl State for MapViewState {
                 }
             }
 
-            self.action.set(None);
+            self.action = None;
         }
     }
 }
@@ -55,9 +55,7 @@ widget!(MapView<MapViewState> : KeyDownHandler {
 });
 
 impl Template for MapView {
-    fn template(self, _: Entity, ctx: &mut BuildContext) -> Self {
-        let state = self.clone_state();
-
+    fn template(self, id: Entity, ctx: &mut BuildContext) -> Self {
         self.name("MapView")
             .child(
                 Container::create()
@@ -91,35 +89,37 @@ impl Template for MapView {
                     )
                     .build(ctx),
             )
-            .on_key_down(move |event: KeyEvent| -> bool {
+            .on_key_down(move |states, event| -> bool {
                 if event.key == Key::Escape {
-                    state.action(MapViewAction::OpenMenu);
+                    states
+                        .get_mut::<MapViewState>(id)
+                        .action(MapViewAction::OpenMenu);
                 }
                 true
             })
     }
 }
 
-#[derive(Copy, Clone)]
+#[derive(AsAny, Copy, Clone)]
 pub enum MenuAction {
     Start,
     Quit,
 }
 
-#[derive(Default)]
+#[derive(AsAny, Default)]
 pub struct MenuViewState {
-    action: Cell<Option<MenuAction>>,
+    action: Option<MenuAction>,
 }
 
 impl MenuViewState {
-    fn action(&self, action: MenuAction) {
-        self.action.set(Some(action));
+    fn action(&mut self, action: MenuAction) {
+        self.action = Some(action);
     }
 }
 
 impl State for MenuViewState {
-    fn update(&self, _: &mut Registry, ctx: &mut Context<'_>) {
-        if let Some(action) = self.action.get() {
+    fn update(&mut self, _: &mut Registry, ctx: &mut Context<'_>) {
+        if let Some(action) = self.action {
             if let Some(window_id) = ctx.parent_entity_by_element("window") {
                 match action {
                     MenuAction::Start => {
@@ -131,7 +131,7 @@ impl State for MenuViewState {
                 }
             }
 
-            self.action.set(None);
+            self.action = None;
         }
     }
 }
@@ -143,11 +143,7 @@ widget!(
 );
 
 impl Template for MenuView {
-    fn template(self, _: Entity, ctx: &mut BuildContext) -> Self {
-        let state = self.clone_state();
-        let ng_state = state.clone();
-        let q_state = state.clone();
-
+    fn template(self, id: Entity, ctx: &mut BuildContext) -> Self {
         self.name("MenuView").child(
             Grid::create()
                 .selector(Selector::from("grid").class("start"))
@@ -170,8 +166,10 @@ impl Template for MenuView {
                                     Button::create()
                                         .margin((0.0, 16.0, 0.0, 0.0))
                                         .text("Start Game")
-                                        .on_click(move |_| {
-                                            ng_state.action(MenuAction::Start);
+                                        .on_click(move |states, _| {
+                                            states
+                                                .get_mut::<MenuViewState>(id)
+                                                .action(MenuAction::Start);
                                             true
                                         })
                                         .build(ctx),
@@ -180,8 +178,10 @@ impl Template for MenuView {
                                     Button::create()
                                         .margin((0.0, 8.0, 0.0, 0.0))
                                         .text("Quit")
-                                        .on_click(move |_| {
-                                            q_state.action(MenuAction::Quit);
+                                        .on_click(move |states, _| {
+                                            states
+                                                .get_mut::<MenuViewState>(id)
+                                                .action(MenuAction::Quit);
                                             true
                                         })
                                         .build(ctx),
@@ -202,7 +202,7 @@ pub enum GameEvent {
     Quit,
 }
 
-pub type GameHandlerFn = dyn Fn(&GameEvent) -> bool + 'static;
+pub type GameHandlerFn = dyn Fn(&mut StatesContext, &GameEvent) -> bool + 'static;
 
 pub struct GameEventHandler {
     handler: Rc<GameHandlerFn>,
@@ -215,9 +215,9 @@ impl Into<Rc<dyn EventHandler>> for GameEventHandler {
 }
 
 impl EventHandler for GameEventHandler {
-    fn handle_event(&self, event: &EventBox) -> bool {
+    fn handle_event(&self, states: &mut StatesContext, event: &EventBox) -> bool {
         if let Ok(event) = event.downcast_ref::<GameEvent>() {
-            return (self.handler)(event);
+            return (self.handler)(states, event);
         }
 
         return false;
@@ -230,20 +230,20 @@ impl EventHandler for GameEventHandler {
 
 impl Event for GameEvent {}
 
-#[derive(Default, Clone)]
+#[derive(AsAny, Default, Clone)]
 pub struct GameViewState {
-    event: Cell<Option<GameEvent>>,
+    event: Option<GameEvent>,
 }
 
 impl GameViewState {
-    fn game_event(&self, event: &GameEvent) {
-        self.event.set(Some(*event));
+    fn game_event(&mut self, event: &GameEvent) {
+        self.event = Some(*event);
     }
 }
 
 impl State for GameViewState {
-    fn update(&self, _: &mut Registry, ctx: &mut Context<'_>) {
-        if let Some(event) = self.event.get() {
+    fn update(&mut self, _: &mut Registry, ctx: &mut Context<'_>) {
+        if let Some(event) = self.event {
             match event {
                 GameEvent::OpenMenu => {
                     ctx.child("map_view")
@@ -262,7 +262,7 @@ impl State for GameViewState {
                 }
             }
 
-            self.event.set(None);
+            self.event = None;
         }
     }
 }
@@ -270,7 +270,10 @@ impl State for GameViewState {
 widget!(GameView<GameViewState> { selector: Selector });
 
 impl GameView {
-    fn on_game_event<H: Fn(&GameEvent) -> bool + 'static>(self, handler: H) -> Self {
+    fn on_game_event<H: Fn(&mut StatesContext, &GameEvent) -> bool + 'static>(
+        self,
+        handler: H,
+    ) -> Self {
         self.insert_handler(GameEventHandler {
             handler: Rc::new(handler),
         })
@@ -278,8 +281,7 @@ impl GameView {
 }
 
 impl Template for GameView {
-    fn template(self, _: Entity, ctx: &mut BuildContext) -> Self {
-        let state = self.clone_state();
+    fn template(self, id: Entity, ctx: &mut BuildContext) -> Self {
         self.name("GameView")
             .selector(Selector::default().id("game_view"))
             .child(
@@ -297,8 +299,8 @@ impl Template for GameView {
                     )
                     .build(ctx),
             )
-            .on_game_event(move |e| {
-                state.game_event(e);
+            .on_game_event(move |states, e| {
+                states.get_mut::<GameViewState>(id).game_event(e);
                 true
             })
     }
