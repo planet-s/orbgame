@@ -1,9 +1,6 @@
 use orbgame::prelude::*;
 use orbgame::theme::DEFAULT_THEME_CSS;
-use std::{
-    cell::RefCell,
-    rc::Rc,
-};
+use std::{cell::RefCell, rc::Rc};
 
 static DUNGEON_THEME: &'static str = include_str!("../res/dungeon/theme.css");
 
@@ -30,11 +27,6 @@ impl MapViewState {
 }
 
 impl State for MapViewState {
-    fn init(&mut self, _: &mut Registry, ctx: &mut Context<'_>) {
-        // workaround
-        ctx.window().get_mut::<Global>("global").focused_widget = Some(ctx.entity);
-    }
-
     fn update(&mut self, _: &mut Registry, ctx: &mut Context<'_>) {
         if let Some(action) = self.action {
             if let Some(window_id) = ctx.parent_entity_by_element("window") {
@@ -47,19 +39,35 @@ impl State for MapViewState {
 
             self.action = None;
         }
+
+        // workaround
+        if let Some(old_focused_element) = ctx.window().get::<Global>("global").focused_widget {
+            if old_focused_element == ctx.entity {
+                return;
+            }
+            let mut old_focused_element = ctx.get_widget(old_focused_element);
+            old_focused_element.set("focused", false);
+            old_focused_element.update_theme_by_state(false);
+        }
+
+        ctx.window().get_mut::<Global>("global").focused_widget = Some(ctx.entity);
+
+        ctx.widget().set("focused", true);
+        ctx.widget().update_theme_by_state(false);
     }
 }
 
 widget!(MapView<MapViewState> : KeyDownHandler {
-    selector: Selector
+    focused: bool
 });
 
 impl Template for MapView {
     fn template(self, id: Entity, ctx: &mut BuildContext) -> Self {
         self.name("MapView")
+            .focused(false)
             .child(
                 Container::create()
-                    .selector("container")
+                    .element("container")
                     .child(
                         Grid::create()
                             .child(
@@ -137,33 +145,36 @@ impl State for MenuViewState {
 }
 
 widget!(
-    MenuView<MenuViewState> {
-        selector: Selector
-    }
+    MenuView<MenuViewState> {}
 );
 
 impl Template for MenuView {
     fn template(self, id: Entity, ctx: &mut BuildContext) -> Self {
         self.name("MenuView").child(
             Grid::create()
-                .selector(Selector::from("grid").class("start"))
+                .element("grid")
+                .class("start")
                 .child(
                     Container::create()
                         .padding(16.0)
-                        .selector(Selector::from("container").class("menu"))
-                        .vertical_alignment("Center")
-                        .horizontal_alignment("Center")
+                        .min_width(120.0)
+                        .element("container")
+                        .class("menu")
+                        .vertical_alignment("center")
+                        .horizontal_alignment("center")
                         .child(
                             Stack::create()
                                 .child(
                                     TextBlock::create()
-                                        .selector(Selector::from("textblock").class("h1"))
+                                        .element("textblock")
+                                        .class("h1")
                                         .text("Dungeon")
                                         .horizontal_alignment("Center")
                                         .build(ctx),
                                 )
                                 .child(
                                     Button::create()
+                                        .class("single_content")
                                         .margin((0.0, 16.0, 0.0, 0.0))
                                         .text("Start Game")
                                         .on_click(move |states, _| {
@@ -176,6 +187,7 @@ impl Template for MenuView {
                                 )
                                 .child(
                                     Button::create()
+                                        .class("single_content")
                                         .margin((0.0, 8.0, 0.0, 0.0))
                                         .text("Quit")
                                         .on_click(move |states, _| {
@@ -233,6 +245,8 @@ impl Event for GameEvent {}
 #[derive(AsAny, Default, Clone)]
 pub struct GameViewState {
     event: Option<GameEvent>,
+    map_view: Entity,
+    menu_view: Entity,
 }
 
 impl GameViewState {
@@ -242,20 +256,29 @@ impl GameViewState {
 }
 
 impl State for GameViewState {
+    fn init(&mut self, _: &mut Registry, ctx: &mut Context) {
+        self.map_view = ctx
+            .entity_of_child("map_view")
+            .expect("GameViewState.init: map_view child could not be found.");
+        self.menu_view = ctx
+            .entity_of_child("menu_view")
+            .expect("GameViewState.init: menu_view box could not be found.");
+    }
+
     fn update(&mut self, _: &mut Registry, ctx: &mut Context<'_>) {
         if let Some(event) = self.event {
             match event {
                 GameEvent::OpenMenu => {
-                    ctx.child("map_view")
-                        .set("visibility", Visibility::from("collapsed"));
-                    ctx.child("menu_view")
-                        .set("visibility", Visibility::from("visible"));
+                    ctx.get_widget(self.map_view)
+                        .set("visibility", Visibility::Collapsed);
+                    ctx.get_widget(self.menu_view)
+                        .set("visibility", Visibility::Visible);
                 }
                 GameEvent::StartGame => {
-                    ctx.child("menu_view")
-                        .set("visibility", Visibility::from("collapsed"));
-                    ctx.child("map_view")
-                        .set("visibility", Visibility::from("visible"));
+                    ctx.get_widget(self.menu_view)
+                        .set("visibility", Visibility::Collapsed);
+                    ctx.get_widget(self.map_view)
+                        .set("visibility", Visibility::Visible);
                 }
                 GameEvent::Quit => {
                     ctx.push_event(SystemEvent::Quit);
@@ -283,20 +306,16 @@ impl GameView {
 impl Template for GameView {
     fn template(self, id: Entity, ctx: &mut BuildContext) -> Self {
         self.name("GameView")
-            .selector(Selector::default().id("game_view"))
+            .id("game_view")
             .child(
                 Grid::create()
                     .child(
                         MapView::create()
-                            .selector(Selector::default().id("map_view"))
-                            .visibility(Visibility::from("collapsed"))
+                            .id("map_view")
+                            .visibility("collapsed")
                             .build(ctx),
                     )
-                    .child(
-                        MenuView::create()
-                            .selector(Selector::default().id("menu_view"))
-                            .build(ctx),
-                    )
+                    .child(MenuView::create().id("menu_view").build(ctx))
                     .build(ctx),
             )
             .on_game_event(move |states, e| {

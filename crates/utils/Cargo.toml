@@ -9,7 +9,7 @@ keywords = ["helpers", "utils", "traits", "games"]
 edition = "2018"
 
 [dependencies]
-orbtk = { git = "https://gitlab.redox-os.org/redox-os/orbtk.git", branch = "develop" }
-serde = "1.0.102"
-serde_derive = "1.0.102"
+orbtk = { git = "https://github.com/redox-os/orbtk.git", branch = "develop" }
+serde = "1.0.104"
+serde_derive = "1.0.104"
 ron = "0.5.1"
