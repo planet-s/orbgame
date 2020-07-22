@@ -33,8 +33,9 @@ impl MapViewState {
 }
 
 impl State for MapViewState {
-    fn update(&mut self, _: &mut Registry, ctx: &mut Context<'_>) {
+    fn update(&mut self, _: &mut Registry, ctx: &mut Context) {
         if let Some(action) = self.action {
+            // todo use same mechanism as in doit
             match action {
                 MapViewAction::OpenMenu => {
                     ctx.push_event_by_window(GameEvent::OpenMenu);
@@ -112,7 +113,7 @@ impl MenuViewState {
 }
 
 impl State for MenuViewState {
-    fn update(&mut self, _: &mut Registry, ctx: &mut Context<'_>) {
+    fn update(&mut self, _: &mut Registry, ctx: &mut Context) {
         if let Some(action) = self.action {
             match action {
                 MenuAction::Start => {
@@ -246,7 +247,7 @@ impl State for GameViewState {
             .expect("GameViewState.init: menu_view box could not be found.");
     }
 
-    fn update(&mut self, _: &mut Registry, ctx: &mut Context<'_>) {
+    fn update(&mut self, _: &mut Registry, ctx: &mut Context) {
         if let Some(event) = self.event {
             match event {
                 GameEvent::OpenMenu => {

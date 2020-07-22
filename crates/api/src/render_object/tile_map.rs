@@ -45,7 +45,7 @@ impl Into<Box<dyn RenderObject>> for TileMapRenderObject {
 }
 
 impl RenderObject for TileMapRenderObject {
-    fn render_self(&self, context: &mut Context<'_>, _: &Point) {
+    fn render_self(&self, context: &mut Context, _: &Point) {
         let (bounds, camera, map, mut image) = {
             let widget = context.widget();
             (
