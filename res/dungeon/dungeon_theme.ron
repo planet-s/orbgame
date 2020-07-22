@@ -1,0 +1,34 @@
+Theme (
+    styles: {
+        "window": (
+             properties: {
+                "background": "#25131a",
+             },
+        ),
+        "menu": (
+            properties: {
+                "background": "#6e4a48",
+                "border_brush": "#472b43",
+                "border_radius": 2,
+                "border_width": 2
+            }
+        ),
+        "button": ( 
+            base: "base",
+            properties: {
+                "height": 36,
+                "foreground": "$WHITE",
+                "icon_brush": "$WHITE",
+                "background": "#895a45",
+                "border_radius": 2,
+                "border_width": 4,
+                "border_brush": "#3d253b"
+            }, 
+            states: {
+                "pressed": {
+                    "background": "#724736",
+                },
+            },
+        ),
+    },
+)

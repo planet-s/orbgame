@@ -19,16 +19,16 @@ impl TileMapRenderObject {
     ) {
         let mut y = y as i32;
         let stride = image.width();
-        let mut offset = clip.y.mul_add(stride, clip.x) as usize;
+        let mut offset = clip.y().mul_add(stride, clip.x()) as usize;
         let last_offset = cmp::min(
-            ((clip.y + clip.height).mul_add(stride, clip.x)) as usize,
+            ((clip.y() + clip.height()).mul_add(stride, clip.x())) as usize,
             image.data().len(),
         );
 
         while offset < last_offset {
             let next_offset = offset + stride as usize;
 
-            for i in 0..clip.width as usize {
+            for i in 0..clip.width() as usize {
                 let index = (x as f64 + y as f64 * render_target.width()).floor() as usize + i;
                 render_target.data_mut()[index] = image.data()[offset + i];
             }
@@ -74,7 +74,7 @@ impl RenderObject for TileMapRenderObject {
 
             for l in 0..map.layer_count {
                 let mut render_target =
-                    RenderTarget::new(bounds.width() as u32, bounds.height as u32);
+                    RenderTarget::new(bounds.width() as u32, bounds.height() as u32);
 
                 // add 1 to prevent missing tiles at the borders
                 let mut end_column = end_column + 1;
@@ -109,8 +109,10 @@ impl RenderObject for TileMapRenderObject {
                             &mut render_target,
                             image,
                             Rectangle::new(
-                                tile_c as f64 * map.tile_size() as f64,
-                                tile_r as f64 * map.tile_size() as f64,
+                                Point::new(
+                                    tile_c as f64 * map.tile_size() as f64,
+                                    tile_r as f64 * map.tile_size() as f64,
+                                ),
                                 map.tile_size as f64,
                                 map.tile_size as f64,
                             ),

@@ -1,13 +1,19 @@
-use orbgame::prelude::*;
-use orbgame::theme::DEFAULT_THEME_CSS;
+use orbgame::{
+    prelude::*,
+    theme::{COLORS_RON, DARK_THEME_RON, FONTS_RON},
+    theming::config::ThemeConfig,
+};
 use std::{cell::RefCell, rc::Rc};
 
-static DUNGEON_THEME: &'static str = include_str!("../res/dungeon/theme.css");
+static DUNGEON_EXT: &'static str = include_str!("../res/dungeon/dungeon_theme.ron");
 
-fn get_theme() -> ThemeValue {
-    ThemeValue::create_from_css(DEFAULT_THEME_CSS)
-        .extension_css(DUNGEON_THEME)
-        .build()
+fn theme() -> Theme {
+    Theme::from_config(
+        ThemeConfig::from(DARK_THEME_RON)
+            .extend(ThemeConfig::from(DUNGEON_EXT))
+            .extend(ThemeConfig::from(COLORS_RON))
+            .extend(ThemeConfig::from(FONTS_RON)),
+    )
 }
 
 #[derive(Copy, Clone)]
@@ -29,49 +35,29 @@ impl MapViewState {
 impl State for MapViewState {
     fn update(&mut self, _: &mut Registry, ctx: &mut Context<'_>) {
         if let Some(action) = self.action {
-            if let Some(window_id) = ctx.parent_entity_by_element("window") {
-                match action {
-                    MapViewAction::OpenMenu => {
-                        ctx.push_event_by_entity(GameEvent::OpenMenu, window_id);
-                    }
+            match action {
+                MapViewAction::OpenMenu => {
+                    ctx.push_event_by_window(GameEvent::OpenMenu);
                 }
             }
 
             self.action = None;
         }
-
-        // workaround
-        if let Some(old_focused_element) = ctx.window().get::<Global>("global").focused_widget {
-            if old_focused_element == ctx.entity {
-                return;
-            }
-            let mut old_focused_element = ctx.get_widget(old_focused_element);
-            old_focused_element.set("focused", false);
-            old_focused_element.update_theme_by_state(false);
-        }
-
-        ctx.window().get_mut::<Global>("global").focused_widget = Some(ctx.entity);
-
-        ctx.widget().set("focused", true);
-        ctx.widget().update_theme_by_state(false);
     }
 }
 
-widget!(MapView<MapViewState> : KeyDownHandler {
-    focused: bool
-});
+widget!(MapView<MapViewState> : KeyDownHandler);
 
 impl Template for MapView {
     fn template(self, id: Entity, ctx: &mut BuildContext) -> Self {
         self.name("MapView")
-            .focused(false)
             .child(
-                Container::create()
-                    .element("container")
+                Container::new()
+                    .style("container")
                     .child(
-                        Grid::create()
+                        Grid::new()
                             .child(
-                                TileMap::create()
+                                TileMap::new()
                                     .camera(
                                         CameraBuilder::new()
                                             .x(0.0)
@@ -87,9 +73,9 @@ impl Template for MapView {
                                     .build(ctx),
                             )
                             .child(
-                                TextBlock::create()
+                                TextBlock::new()
                                     .text("Press ESC to open menu")
-                                    .vertical_alignment("bottom")
+                                    .v_align("bottom")
                                     .margin(4.0)
                                     .build(ctx),
                             )
@@ -128,14 +114,12 @@ impl MenuViewState {
 impl State for MenuViewState {
     fn update(&mut self, _: &mut Registry, ctx: &mut Context<'_>) {
         if let Some(action) = self.action {
-            if let Some(window_id) = ctx.parent_entity_by_element("window") {
-                match action {
-                    MenuAction::Start => {
-                        ctx.push_event_by_entity(GameEvent::StartGame, window_id);
-                    }
-                    MenuAction::Quit => {
-                        ctx.push_event_by_entity(GameEvent::Quit, window_id);
-                    }
+            match action {
+                MenuAction::Start => {
+                    ctx.push_event_by_window(GameEvent::StartGame);
+                }
+                MenuAction::Quit => {
+                    ctx.push_event_by_window(GameEvent::Quit);
                 }
             }
 
@@ -151,30 +135,27 @@ widget!(
 impl Template for MenuView {
     fn template(self, id: Entity, ctx: &mut BuildContext) -> Self {
         self.name("MenuView").child(
-            Grid::create()
-                .element("grid")
-                .class("start")
+            Grid::new()
+                .style("start")
                 .child(
-                    Container::create()
+                    Container::new()
                         .padding(16.0)
                         .min_width(120.0)
-                        .element("container")
-                        .class("menu")
-                        .vertical_alignment("center")
-                        .horizontal_alignment("center")
+                        .style("menu")
+                        .v_align("center")
+                        .h_align("center")
                         .child(
-                            Stack::create()
+                            Stack::new()
                                 .child(
-                                    TextBlock::create()
-                                        .element("textblock")
-                                        .class("h1")
+                                    TextBlock::new()
+                                        .style("header")
                                         .text("Dungeon")
-                                        .horizontal_alignment("Center")
+                                        .h_align("Center")
                                         .build(ctx),
                                 )
                                 .child(
-                                    Button::create()
-                                        .class("single_content")
+                                    Button::new()
+                                        .style("button_single_content")
                                         .margin((0.0, 16.0, 0.0, 0.0))
                                         .text("Start Game")
                                         .on_click(move |states, _| {
@@ -186,8 +167,8 @@ impl Template for MenuView {
                                         .build(ctx),
                                 )
                                 .child(
-                                    Button::create()
-                                        .class("single_content")
+                                    Button::new()
+                                        .style("button_single_content")
                                         .margin((0.0, 8.0, 0.0, 0.0))
                                         .text("Quit")
                                         .on_click(move |states, _| {
@@ -290,7 +271,7 @@ impl State for GameViewState {
     }
 }
 
-widget!(GameView<GameViewState> { selector: Selector });
+widget!(GameView<GameViewState>);
 
 impl GameView {
     fn on_game_event<H: Fn(&mut StatesContext, &GameEvent) -> bool + 'static>(
@@ -308,14 +289,14 @@ impl Template for GameView {
         self.name("GameView")
             .id("game_view")
             .child(
-                Grid::create()
+                Grid::new()
                     .child(
-                        MapView::create()
+                        MapView::new()
                             .id("map_view")
                             .visibility("collapsed")
                             .build(ctx),
                     )
-                    .child(MenuView::create().id("menu_view").build(ctx))
+                    .child(MenuView::new().id("menu_view").build(ctx))
                     .build(ctx),
             )
             .on_game_event(move |states, e| {
@@ -327,13 +308,13 @@ impl Template for GameView {
 
 fn main() {
     Game::new()
+        .theme(theme())
         .window(|ctx| {
-            Window::create()
+            Window::new()
                 .title("OrbGame - dungeon example")
                 .position((100.0, 100.0))
                 .size(800.0, 600.0)
-                .theme(get_theme())
-                .child(GameView::create().build(ctx))
+                .child(GameView::new().build(ctx))
                 .build(ctx)
         })
         .run();
